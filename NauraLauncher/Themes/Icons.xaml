@@ -64,4 +64,105 @@
     <!-- Settings / gear -->
     <Geometry x:Key="Icon.Settings">M12 8 A4 4 0 1 0 12 16 A4 4 0 1 0 12 8 Z M12 2 L12 5 M12 19 L12 22 M4.9 4.9 L7 7 M17 17 L19.1 19.1 M2 12 L5 12 M19 12 L22 12 M4.9 19.1 L7 17 M17 7 L19.1 4.9</Geometry>
 
+
+    <!-- ================= PAGE-SHELL / PAGE ICONS ================= -->
+
+    <!-- Clock / playtime -->
+    <Geometry x:Key="Icon.Clock">M12 3 A9 9 0 1 0 12 21 A9 9 0 1 0 12 3 Z M12 7 L12 12 L16 14</Geometry>
+
+    <!-- Trophy / achievements -->
+    <Geometry x:Key="Icon.Trophy">M8 4 L16 4 L16 9 A4 4 0 0 1 8 9 Z M8 5 L5 5 A3 3 0 0 0 8 8 M16 5 L19 5 A3 3 0 0 1 16 8 M10 17 L14 17 M12 13 L12 17 M9 20 L15 20</Geometry>
+
+    <!-- Users / squad -->
+    <Geometry x:Key="Icon.Users">M9 4 A3.5 3.5 0 1 0 9 11 A3.5 3.5 0 1 0 9 4 Z M3 20 A6 6 0 0 1 15 20 M17 4.5 A3.5 3.5 0 0 1 17 11 M17 15 A6 6 0 0 1 21 20</Geometry>
+
+    <!-- Single user -->
+    <Geometry x:Key="Icon.User">M12 4 A4 4 0 1 0 12 12 A4 4 0 1 0 12 4 Z M4 21 A8 8 0 0 1 20 21</Geometry>
+
+    <!-- Hard drive / storage -->
+    <Geometry x:Key="Icon.HardDrive">M3 12 L5 5 L19 5 L21 12 L21 18 L3 18 Z M7 15 L7 15.01 M10.5 15 L10.5 15.01</Geometry>
+
+    <!-- Play -->
+    <Geometry x:Key="Icon.Play">M8 5 L19 12 L8 19 Z</Geometry>
+
+    <!-- Chevrons -->
+    <Geometry x:Key="Icon.ChevronLeft">M15 6 L9 12 L15 18</Geometry>
+    <Geometry x:Key="Icon.ChevronRight">M9 6 L15 12 L9 18</Geometry>
+
+    <!-- Shield / certified -->
+    <Geometry x:Key="Icon.Shield">M12 3 L20 6 L20 12 A8 8 0 0 1 12 21 A8 8 0 0 1 4 12 L4 6 Z M9 12 L11 14 L15 10</Geometry>
+
+    <!-- Lock / privacy -->
+    <Geometry x:Key="Icon.Lock">M6 11 L18 11 L18 20 L6 20 Z M9 11 L9 8 A3 3 0 0 1 15 8 L15 11</Geometry>
+
+    <!-- Monitor / video -->
+    <Geometry x:Key="Icon.Monitor">M3 5 L21 5 L21 16 L3 16 Z M9 20 L15 20 M12 16 L12 20</Geometry>
+
+    <!-- Volume / audio -->
+    <Geometry x:Key="Icon.Volume">M4 9 L8 9 L13 5 L13 19 L8 15 L4 15 Z M16 9 A4 4 0 0 1 16 15 M18.5 6.5 A7.5 7.5 0 0 1 18.5 17.5</Geometry>
+
+    <!-- Gamepad / input -->
+    <Geometry x:Key="Icon.Gamepad">M7 8 L17 8 A5 5 0 0 1 17 18 L7 18 A5 5 0 0 1 7 8 Z M7.5 12 L10.5 12 M9 10.5 L9 13.5 M15 12 L15 12.01 M17 14 L17 14.01</Geometry>
+
+    <!-- Wifi / network -->
+    <Geometry x:Key="Icon.Wifi">M3 9 A13 13 0 0 1 21 9 M6.5 12.5 A8 8 0 0 1 17.5 12.5 M10 16 A3 3 0 0 1 14 16 M12 19.5 L12 19.51</Geometry>
+
+    <!-- Flame / hot lot -->
+    <Geometry x:Key="Icon.Flame">M12 3 C14 7 18 8 18 13 A6 6 0 0 1 6 13 C6 10 8 8.5 9 6 C10 8 11 9 12 9 C12 7 12 5 12 3 Z</Geometry>
+
+    <!-- Trending up / hammer prices -->
+    <Geometry x:Key="Icon.TrendingUp">M3 17 L9 11 L13 15 L21 7 M15 7 L21 7 L21 13</Geometry>
+
+    <!-- Eye / watchlist -->
+    <Geometry x:Key="Icon.Eye">M2 12 A14 14 0 0 1 22 12 A14 14 0 0 1 2 12 Z M12 9 A3 3 0 1 0 12 15 A3 3 0 1 0 12 9 Z</Geometry>
+
+    <!-- Box / vault drop -->
+    <Geometry x:Key="Icon.Box">M12 3 L21 8 L21 16 L12 21 L3 16 L3 8 Z M3 8 L12 13 L21 8 M12 13 L12 21</Geometry>
+
+    <!-- Wallet / escrow -->
+    <Geometry x:Key="Icon.Wallet">M3 6 L18 6 L18 10 M3 6 L3 18 L21 18 L21 10 L18 10 M3 6 L3 4 L16 4 M17 14 L17 14.01</Geometry>
+
+    <!-- Info -->
+    <Geometry x:Key="Icon.Info">M12 3 A9 9 0 1 0 12 21 A9 9 0 1 0 12 3 Z M12 11 L12 16 M12 8 L12 8.01</Geometry>
+
+    <!-- Plus / minus -->
+    <Geometry x:Key="Icon.Plus">M12 5 L12 19 M5 12 L19 12</Geometry>
+    <Geometry x:Key="Icon.Minus">M5 12 L19 12</Geometry>
+
+    <!-- Refresh / reset -->
+    <Geometry x:Key="Icon.Refresh">M20 12 A8 8 0 1 1 17 6 M20 4 L20 8 L16 8</Geometry>
+
+    <!-- Tag / price -->
+    <Geometry x:Key="Icon.Tag">M4 4 L12 4 L20 12 L12 20 L4 12 Z M8 8 L8 8.01</Geometry>
+
+    <!-- Fingerprint / provenance -->
+    <Geometry x:Key="Icon.Fingerprint">M4 12 A8 8 0 0 1 20 12 M7 12 A5 5 0 0 1 17 12 M10 12 A2 2 0 0 1 14 12 M12 12 L12 19</Geometry>
+
+    <!-- Arrow up-right -->
+    <Geometry x:Key="Icon.ArrowUpRight">M7 17 L17 7 M9 7 L17 7 L17 15</Geometry>
+
+    <!-- Layers / rarity -->
+    <Geometry x:Key="Icon.Layers">M12 3 L21 8 L12 13 L3 8 Z M3 12 L12 17 L21 12 M3 16 L12 21 L21 16</Geometry>
+
+    <!-- Zap / live -->
+    <Geometry x:Key="Icon.Zap">M13 2 L5 13 L11 13 L10 22 L19 10 L13 10 Z</Geometry>
+
+    <!-- Award -->
+    <Geometry x:Key="Icon.Award">M12 3 A6 6 0 1 0 12 15 A6 6 0 1 0 12 3 Z M9 14 L7 21 L12 18.5 L17 21 L15 14</Geometry>
+
+    <!-- Bell -->
+    <Geometry x:Key="Icon.Bell">M6 9 A6 6 0 0 1 18 9 L18 14 L20 17 L4 17 L6 14 Z M10 20 A2 2 0 0 0 14 20</Geometry>
+
+    <!-- Activity -->
+    <Geometry x:Key="Icon.Activity">M3 12 L8 12 L10 6 L14 18 L16 12 L21 12</Geometry>
+
+    <!-- Server -->
+    <Geometry x:Key="Icon.Server">M4 4 L20 4 L20 10 L4 10 Z M4 14 L20 14 L20 20 L4 20 Z M8 7 L8 7.01 M8 17 L8 17.01</Geometry>
+
+    <!-- Hourglass / countdown -->
+    <Geometry x:Key="Icon.Hourglass">M6 3 L18 3 L18 7 L12 12 L18 17 L18 21 L6 21 L6 17 L12 12 L6 7 Z</Geometry>
+
+    <!-- Keyboard -->
+    <Geometry x:Key="Icon.Keyboard">M3 6 L21 6 L21 18 L3 18 Z M7 10 L7 10.01 M11 10 L11 10.01 M15 10 L15 10.01 M8 14 L16 14</Geometry>
+
 </ResourceDictionary>
