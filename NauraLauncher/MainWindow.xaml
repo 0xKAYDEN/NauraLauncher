@@ -87,7 +87,7 @@
                 <Border Grid.Column="1" HorizontalAlignment="Center" VerticalAlignment="Center"
                         Background="{DynamicResource SurfaceBrush}"
                         BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                        CornerRadius="999" Padding="6,5"
+                        CornerRadius="25" Padding="6,5"
                         WindowChrome.IsHitTestVisibleInChrome="True">
                     <ItemsControl ItemsSource="{Binding NavItems}">
                         <ItemsControl.ItemsPanel>
@@ -133,7 +133,7 @@
                     <!-- Search -->
                     <Border Background="{DynamicResource SurfaceBrush}"
                             BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                            CornerRadius="999" Width="240" Height="40" Margin="0,0,14,0">
+                            CornerRadius="20" Width="240" Height="40" Margin="0,0,14,0">
                         <Grid Margin="14,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -168,7 +168,7 @@
                     <!-- Credits -->
                     <Border Background="{DynamicResource SurfaceBrush}"
                             BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                            CornerRadius="999" Height="40" Padding="16,0" Margin="0,0,14,0">
+                            CornerRadius="20" Height="40" Padding="16,0" Margin="0,0,14,0">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
                             <TextBlock Text="CREDITS" Style="{StaticResource Label}"
                                        Foreground="{DynamicResource MutedForegroundBrush}"
@@ -182,9 +182,9 @@
                     <!-- User -->
                     <Border Background="{DynamicResource SurfaceBrush}"
                             BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1"
-                            CornerRadius="999" Height="46" Padding="6,4,16,4">
+                            CornerRadius="25" Height="46" Padding="6,4,16,4">
                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Border Width="36" Height="36" CornerRadius="999" Margin="0,0,10,0">
+                            <Border Width="36" Height="36" CornerRadius="15" Margin="0,0,10,0">
                                 <Border.Background>
                                     <ImageBrush ImageSource="Assets/avatar.png" Stretch="UniformToFill"/>
                                 </Border.Background>

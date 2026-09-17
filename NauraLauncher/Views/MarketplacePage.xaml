@@ -183,10 +183,10 @@
                                     <!-- Edition toggle -->
                                     <Border Grid.Column="0" Background="#66000000"
                                             BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                                            CornerRadius="999" Padding="5" VerticalAlignment="Center">
+                                            CornerRadius="25" Padding="5" VerticalAlignment="Center">
                                         <StackPanel Orientation="Horizontal">
                                             <Border Background="{DynamicResource ElevatedBrush}"
-                                                    CornerRadius="999" Padding="16,8">
+                                                    CornerRadius="20" Padding="16,8">
                                                 <TextBlock Text="{Binding Feature.EditionPrimary}"
                                                            FontWeight="SemiBold" FontSize="13"
                                                            Foreground="{DynamicResource ForegroundBrush}"/>

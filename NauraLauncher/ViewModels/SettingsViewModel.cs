@@ -16,12 +16,12 @@ public class SettingsViewModel : ObservableObject
     {
         Sections = new ObservableCollection<SettingsSection>
         {
-            new() { Id = "general", Name = "GENERAL", IconKey = "Icon.Sliders",   Hint = "5 OPTIONS",  IsSelected = true },
-            new() { Id = "video",   Name = "VIDEO",   IconKey = "Icon.Monitor",   Hint = "6 OPTIONS" },
-            new() { Id = "audio",   Name = "AUDIO",   IconKey = "Icon.Volume",    Hint = "6 OPTIONS" },
-            new() { Id = "input",   Name = "INPUT",   IconKey = "Icon.Gamepad",   Hint = "4 OPTIONS" },
-            new() { Id = "network", Name = "NETWORK", IconKey = "Icon.Wifi",      Hint = "4 OPTIONS" },
-            new() { Id = "privacy", Name = "PRIVACY", IconKey = "Icon.Lock",      Hint = "4 OPTIONS" },
+            new() { Id = "general", Name = "GENERAL", IconKey = "Icon.Sliders",   Hint = "  5 OPTIONS",  IsSelected = true },
+            new() { Id = "video",   Name = "VIDEO",   IconKey = "Icon.Monitor",   Hint = "  6 OPTIONS" },
+            new() { Id = "audio",   Name = "AUDIO",   IconKey = "Icon.Volume",    Hint = "  6 OPTIONS" },
+            new() { Id = "input",   Name = "INPUT",   IconKey = "Icon.Gamepad",   Hint = "  4 OPTIONS" },
+            new() { Id = "network", Name = "NETWORK", IconKey = "Icon.Wifi",      Hint = "  4 OPTIONS" },
+            new() { Id = "privacy", Name = "PRIVACY", IconKey = "Icon.Lock",      Hint = "  4 OPTIONS" },
         };
 
         SelectSectionCommand = new RelayCommand(p =>

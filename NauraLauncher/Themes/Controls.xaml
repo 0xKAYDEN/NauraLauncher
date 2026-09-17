@@ -21,7 +21,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="bd" Background="{TemplateBinding Background}"
-                            CornerRadius="999" Padding="{TemplateBinding Padding}">
+                            CornerRadius="25" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -73,7 +73,7 @@
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="bd" Background="{TemplateBinding Background}"
                             BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1"
-                            CornerRadius="999" Padding="{TemplateBinding Padding}">
+                            CornerRadius="25" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -99,7 +99,7 @@
             <Setter.Value>
                 <ControlTemplate TargetType="Button">
                     <Border x:Name="bd" Background="{TemplateBinding Background}"
-                            CornerRadius="999" Padding="{TemplateBinding Padding}">
+                            CornerRadius="20" Padding="{TemplateBinding Padding}">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -260,7 +260,7 @@
                 <ControlTemplate TargetType="ToggleButton">
                     <Border x:Name="track" Background="{TemplateBinding Background}"
                             BorderBrush="{TemplateBinding BorderBrush}" BorderThickness="1"
-                            CornerRadius="999">
+                            CornerRadius="12">
                         <Ellipse x:Name="knob" Width="16" Height="16" Margin="3,0"
                                  HorizontalAlignment="Left"
                                  Fill="{DynamicResource MutedForegroundBrush}" />
@@ -377,7 +377,7 @@
         <Setter Property="Background" Value="{DynamicResource MutedBrush}" />
         <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}" />
         <Setter Property="BorderThickness" Value="1" />
-        <Setter Property="CornerRadius" Value="999" />
+        <Setter Property="CornerRadius" Value="25" />
         <Setter Property="Padding" Value="5" />
         <Setter Property="VerticalAlignment" Value="Center" />
         <Setter Property="HorizontalAlignment" Value="Left" />
@@ -393,7 +393,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="RadioButton">
-                    <Border x:Name="bd" Background="Transparent" CornerRadius="999" Padding="18,9">
+                    <Border x:Name="bd" Background="Transparent" CornerRadius="20" Padding="18,9">
                         <ContentPresenter HorizontalAlignment="Center" VerticalAlignment="Center" />
                     </Border>
                     <ControlTemplate.Triggers>
@@ -415,13 +415,13 @@
     <!-- ========== PROGRESS TRACK / FILL ========== -->
     <Style x:Key="ProgressTrack" TargetType="Border">
         <Setter Property="Height" Value="6" />
-        <Setter Property="CornerRadius" Value="999" />
+        <Setter Property="CornerRadius" Value="5" />
         <Setter Property="Background" Value="{DynamicResource MutedBrush}" />
         <Setter Property="ClipToBounds" Value="True" />
     </Style>
 
     <Style x:Key="ProgressFill" TargetType="Border">
-        <Setter Property="CornerRadius" Value="999" />
+        <Setter Property="CornerRadius" Value="5" />
         <Setter Property="Background" Value="{DynamicResource AccentBrush}" />
         <Setter Property="Height" Value="6" />
         <Setter Property="HorizontalAlignment" Value="Stretch" />
