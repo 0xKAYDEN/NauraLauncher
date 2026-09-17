@@ -139,7 +139,7 @@
                                                       Brush="{DynamicResource MutedForegroundBrush}"
                                                       StrokeWidth="1.8" Width="17" Height="17" Margin="0,0,12,0"
                                                       VerticalAlignment="Center"/>
-                                    <TextBlock Grid.Column="1" Text="{Binding Name}" Style="{StaticResource Label}"
+                                    <TextBlock Grid.Column="1" Text="{Binding Name}"
                                                FontSize="12" VerticalAlignment="Center">
                                         <TextBlock.Style>
                                             <Style TargetType="TextBlock" BasedOn="{StaticResource Label}">

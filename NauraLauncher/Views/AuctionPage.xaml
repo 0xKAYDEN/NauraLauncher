@@ -357,7 +357,6 @@
                                                            Style="{StaticResource Label}"
                                                            VerticalAlignment="Center"/>
                                                 <TextBlock Grid.Column="1" Text="{Binding Value}"
-                                                           Style="{StaticResource Label}"
                                                            FontSize="12" VerticalAlignment="Center">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Label}">
@@ -434,7 +433,7 @@
 
                                                 <StackPanel Grid.Column="3" Orientation="Horizontal"
                                                             HorizontalAlignment="Right" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Delta}" Style="{StaticResource Label}" FontWeight="Bold">
+                                                    <TextBlock Text="{Binding Delta}" FontWeight="Bold">
                                                         <TextBlock.Style>
                                                             <Style TargetType="TextBlock" BasedOn="{StaticResource Label}">
                                                                 <Setter Property="Foreground" Value="{DynamicResource DestructiveBrush}"/>

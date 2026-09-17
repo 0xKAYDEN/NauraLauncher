@@ -332,7 +332,7 @@
                                             <Border Style="{StaticResource Badge}" Margin="10"
                                                     HorizontalAlignment="Left" VerticalAlignment="Top"
                                                     Background="#B3000000" Padding="9,5">
-                                                <TextBlock Text="{Binding Ribbon}" Style="{StaticResource Label}"
+                                                <TextBlock Text="{Binding Ribbon}"
                                                            FontWeight="Bold" FontSize="10">
                                                     <TextBlock.Style>
                                                         <Style TargetType="TextBlock" BasedOn="{StaticResource Label}">
