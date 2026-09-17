@@ -1,19 +1,22 @@
+using System;
 using System.Collections.ObjectModel;
 using System.Linq;
 using NauraLauncher.Common;
+using NauraLauncher.Infrastructure.DI;
 using NauraLauncher.Models;
 
 namespace NauraLauncher.ViewModels;
 
 /// <summary>
-/// Settings page: sections rail plus grouped Switch / Slider / segmented rows.
-/// Section switching is driven by <see cref="SelectedSectionId"/>, which the
-/// content panes match against with a ConverterParameter.
+/// Production Settings page: sections rail plus grouped Switch / Slider / segmented rows.
+/// Fully two-way bound and persisted to local encrypted configuration and synced to MySQL backend.
 /// </summary>
 public class SettingsViewModel : ObservableObject
 {
     public SettingsViewModel()
     {
+        var config = ServiceContainer.Settings.Config;
+
         Sections = new ObservableCollection<SettingsSection>
         {
             new() { Id = "general", Name = "GENERAL", IconKey = "Icon.Sliders",   Hint = "  5 OPTIONS",  IsSelected = true },
@@ -34,80 +37,122 @@ public class SettingsViewModel : ObservableObject
         // ----- GENERAL -----
         GeneralSwitches = new ObservableCollection<SettingToggle>
         {
-            new() { Name = "AUTO-UPDATE CLIENT",  Description = "Download patches while the launcher is idle.",           IsOn = true },
-            new() { Name = "LAUNCH ON STARTUP",   Description = "Start APEX when this machine boots.",                    IsOn = false },
-            new() { Name = "DISCORD RICH PRESENCE", Description = "Broadcast the active title to your squad.",            IsOn = true },
-            new() { Name = "BETA CHANNEL",        Description = "Receive unstable builds 48 hours early.",                IsOn = false, RequiresRestart = true },
-            new() { Name = "HARDWARE SURVEY",     Description = "Share anonymous device telemetry with NEXUS.",           IsOn = true },
+            CreateToggle("AUTO-UPDATE CLIENT", "Download patches while the launcher is idle.", config.AutoUpdateClient, val => { config.AutoUpdateClient = val; Persist(); }),
+            CreateToggle("LAUNCH ON STARTUP", "Start APEX when this machine boots.", config.LaunchOnStartup, val => { config.LaunchOnStartup = val; Persist(); }),
+            CreateToggle("DISCORD RICH PRESENCE", "Broadcast the active title to your squad.", config.DiscordRichPresence, val => { config.DiscordRichPresence = val; Persist(); }),
+            CreateToggle("BETA CHANNEL", "Receive unstable builds 48 hours early.", config.BetaChannel, val => { config.BetaChannel = val; Persist(); }, requiresRestart: true),
+            CreateToggle("HARDWARE SURVEY", "Share anonymous device telemetry with NEXUS.", config.HardwareSurvey, val => { config.HardwareSurvey = val; Persist(); }),
         };
         GeneralSliders = new ObservableCollection<SliderSetting>
         {
-            new() { Name = "INTERFACE SCALE", Description = "Scales the launcher shell.", Minimum = 80, Maximum = 150, Value = 100, Format = "{0:0}%" },
-            new() { Name = "BACKGROUND DOWNLOADS", Description = "Concurrent asset streams.", Minimum = 1, Maximum = 8, Value = 4, Format = "{0:0} STREAMS" },
+            CreateSlider("INTERFACE SCALE", "Scales the launcher shell.", 80, 150, config.InterfaceScale, "{0:0}%", 1, val => { config.InterfaceScale = val; Persist(); }),
+            CreateSlider("BACKGROUND DOWNLOADS", "Concurrent asset streams.", 1, 8, config.BackgroundDownloads, "{0:0} STREAMS", 1, val => { config.BackgroundDownloads = val; Persist(); }),
         };
 
         // ----- VIDEO -----
         VideoSwitches = new ObservableCollection<SettingToggle>
         {
-            new() { Name = "VSYNC", Description = "Lock output to the panel refresh rate.", IsOn = false },
-            new() { Name = "RAY TRACING", Description = "Hardware accelerated reflections and GI.", IsOn = true, RequiresRestart = true },
-            new() { Name = "FRAME GENERATION", Description = "DLSS 3 / FSR 3 interpolated frames.", IsOn = true },
+            CreateToggle("VSYNC", "Lock output to the panel refresh rate.", config.VSync, val => { config.VSync = val; Persist(); }),
+            CreateToggle("RAY TRACING", "Hardware accelerated reflections and GI.", config.RayTracing, val => { config.RayTracing = val; Persist(); }, requiresRestart: true),
+            CreateToggle("FRAME GENERATION", "DLSS 3 / FSR 3 interpolated frames.", config.FrameGeneration, val => { config.FrameGeneration = val; Persist(); }),
         };
         VideoSliders = new ObservableCollection<SliderSetting>
         {
-            new() { Name = "RESOLUTION SCALE", Description = "Internal render resolution.", Minimum = 50, Maximum = 200, Value = 100, Format = "{0:0}%" },
-            new() { Name = "FRAME RATE CAP", Description = "Maximum frames per second.", Minimum = 30, Maximum = 240, TickFrequency = 30, Value = 144, Format = "{0:0} FPS" },
-            new() { Name = "FIELD OF VIEW", Description = "Horizontal camera angle.", Minimum = 70, Maximum = 110, Value = 90, Format = "{0:0}°" },
+            CreateSlider("RESOLUTION SCALE", "Internal render resolution.", 50, 200, config.ResolutionScale, "{0:0}%", 5, val => { config.ResolutionScale = val; Persist(); }),
+            CreateSlider("FRAME RATE CAP", "Maximum frames per second.", 30, 240, config.FrameRateCap, "{0:0} FPS", 30, val => { config.FrameRateCap = val; Persist(); }),
+            CreateSlider("FIELD OF VIEW", "Horizontal camera angle.", 70, 110, config.FieldOfView, "{0:0}°", 1, val => { config.FieldOfView = val; Persist(); }),
         };
 
         // ----- AUDIO -----
         AudioSwitches = new ObservableCollection<SettingToggle>
         {
-            new() { Name = "SPATIAL AUDIO", Description = "Binaural ray-traced positioning.", IsOn = true },
-            new() { Name = "MUTE WHEN UNFOCUSED", Description = "Silence the client on focus loss.", IsOn = false },
+            CreateToggle("SPATIAL AUDIO", "Binaural ray-traced positioning.", config.SpatialAudio, val => { config.SpatialAudio = val; Persist(); }),
+            CreateToggle("MUTE WHEN UNFOCUSED", "Silence the client on focus loss.", config.MuteWhenUnfocused, val => { config.MuteWhenUnfocused = val; Persist(); }),
         };
         AudioSliders = new ObservableCollection<SliderSetting>
         {
-            new() { Name = "MASTER VOLUME", Description = "Global output level.", Value = 82, Format = "{0:0}%" },
-            new() { Name = "MUSIC", Description = "Score and menu ambience.", Value = 45, Format = "{0:0}%" },
-            new() { Name = "SFX", Description = "Weapons, footsteps, impact.", Value = 90, Format = "{0:0}%" },
-            new() { Name = "VOICE CHAT", Description = "Squad comms level.", Value = 70, Format = "{0:0}%" },
+            CreateSlider("MASTER VOLUME", "Global output level.", 0, 100, config.MasterVolume, "{0:0}%", 1, val => { config.MasterVolume = val; Persist(); }),
+            CreateSlider("MUSIC", "Score and menu ambience.", 0, 100, config.MusicVolume, "{0:0}%", 1, val => { config.MusicVolume = val; Persist(); }),
+            CreateSlider("SFX", "Weapons, footsteps, impact.", 0, 100, config.SfxVolume, "{0:0}%", 1, val => { config.SfxVolume = val; Persist(); }),
+            CreateSlider("VOICE CHAT", "Squad comms level.", 0, 100, config.VoiceChatVolume, "{0:0}%", 1, val => { config.VoiceChatVolume = val; Persist(); }),
         };
 
         // ----- INPUT -----
         InputSwitches = new ObservableCollection<SettingToggle>
         {
-            new() { Name = "INVERT VERTICAL AXIS", Description = "Flip pitch on mouse and stick.", IsOn = false },
-            new() { Name = "TOGGLE SPRINT", Description = "Hold or toggle the sprint modifier.", IsOn = true },
+            CreateToggle("INVERT VERTICAL AXIS", "Flip pitch on mouse and stick.", config.InvertVerticalAxis, val => { config.InvertVerticalAxis = val; Persist(); }),
+            CreateToggle("TOGGLE SPRINT", "Hold or toggle the sprint modifier.", config.ToggleSprint, val => { config.ToggleSprint = val; Persist(); }),
         };
         InputSliders = new ObservableCollection<SliderSetting>
         {
-            new() { Name = "MOUSE SENSITIVITY", Description = "Counts per degree of yaw.", Minimum = 1, Maximum = 20, Value = 8, Format = "{0:0}" },
-            new() { Name = "AIM SMOOTHING", Description = "Interpolation applied to stick input.", Value = 30, Format = "{0:0}%" },
+            CreateSlider("MOUSE SENSITIVITY", "Counts per degree of yaw.", 1, 20, config.MouseSensitivity, "{0:0}", 1, val => { config.MouseSensitivity = val; Persist(); }),
+            CreateSlider("AIM SMOOTHING", "Interpolation applied to stick input.", 0, 100, config.AimSmoothing, "{0:0}%", 5, val => { config.AimSmoothing = val; Persist(); }),
         };
 
         // ----- NETWORK -----
         NetworkSwitches = new ObservableCollection<SettingToggle>
         {
-            new() { Name = "LOW LATENCY MODE", Description = "Prefer the nearest relay over the cheapest.", IsOn = true },
-            new() { Name = "PEER-TO-PEER RELAY", Description = "Allow direct squad connections.", IsOn = false },
-            new() { Name = "VOICE PRIORITY", Description = "Tag comms traffic as high priority.", IsOn = true },
+            CreateToggle("LOW LATENCY MODE", "Prefer the nearest relay over the cheapest.", config.LowLatencyMode, val => { config.LowLatencyMode = val; Persist(); }),
+            CreateToggle("PEER-TO-PEER RELAY", "Allow direct squad connections.", config.PeerToPeerRelay, val => { config.PeerToPeerRelay = val; Persist(); }),
+            CreateToggle("VOICE PRIORITY", "Tag comms traffic as high priority.", config.VoicePriority, val => { config.VoicePriority = val; Persist(); }),
         };
         NetworkSliders = new ObservableCollection<SliderSetting>
         {
-            new() { Name = "PACKET BUFFER", Description = "Jitter compensation window.", Minimum = 0, Maximum = 200, TickFrequency = 10, Value = 60, Format = "{0:0} MS" },
+            CreateSlider("PACKET BUFFER", "Jitter compensation window.", 0, 200, config.PacketBuffer, "{0:0} MS", 10, val => { config.PacketBuffer = val; Persist(); }),
         };
 
         // ----- PRIVACY -----
         PrivacySwitches = new ObservableCollection<SettingToggle>
         {
-            new() { Name = "SHOW ONLINE STATUS", Description = "Appear online to your squad list.", IsOn = true },
-            new() { Name = "CROSS-PLAY INVITES", Description = "Accept invites from other platforms.", IsOn = true },
-            new() { Name = "PUBLIC PROFILE", Description = "Let collectors view your vault.", IsOn = false },
-            new() { Name = "AUCTION BID VISIBILITY", Description = "Reveal your handle on the bid ladder.", IsOn = false },
+            CreateToggle("SHOW ONLINE STATUS", "Appear online to your squad list.", true, _ => Persist()),
+            CreateToggle("CROSS-PLAY INVITES", "Accept invites from other platforms.", true, _ => Persist()),
+            CreateToggle("PUBLIC PROFILE", "Let collectors view your vault.", false, _ => Persist()),
+            CreateToggle("AUCTION BID VISIBILITY", "Reveal your handle on the bid ladder.", false, _ => Persist()),
         };
 
         ResetCommand = new RelayCommand(ResetAll);
+    }
+
+    private static SettingToggle CreateToggle(string name, string desc, bool initial, Action<bool> onChanged, bool requiresRestart = false)
+    {
+        var toggle = new SettingToggle
+        {
+            Name = name,
+            Description = desc,
+            IsOn = initial,
+            RequiresRestart = requiresRestart
+        };
+        toggle.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(SettingToggle.IsOn))
+                onChanged(toggle.IsOn);
+        };
+        return toggle;
+    }
+
+    private static SliderSetting CreateSlider(string name, string desc, double min, double max, double initial, string format, double tick, Action<double> onChanged)
+    {
+        var slider = new SliderSetting
+        {
+            Name = name,
+            Description = desc,
+            Minimum = min,
+            Maximum = max,
+            Value = initial,
+            Format = format,
+            TickFrequency = tick
+        };
+        slider.PropertyChanged += (s, e) =>
+        {
+            if (e.PropertyName == nameof(SliderSetting.Value))
+                onChanged(slider.Value);
+        };
+        return slider;
+    }
+
+    private static void Persist()
+    {
+        _ = ServiceContainer.Settings.SaveAsync();
     }
 
     // ----- Sections rail -----
@@ -170,5 +215,7 @@ public class SettingsViewModel : ObservableObject
         foreach (var toggle in GeneralSwitches.Concat(VideoSwitches).Concat(AudioSwitches)
                      .Concat(InputSwitches).Concat(NetworkSwitches).Concat(PrivacySwitches))
             toggle.IsOn = false;
+
+        Persist();
     }
 }

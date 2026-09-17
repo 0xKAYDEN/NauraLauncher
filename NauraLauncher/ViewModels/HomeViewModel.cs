@@ -1,28 +1,53 @@
 using System;
 using System.Collections.ObjectModel;
+using System.IO;
+using System.Linq;
+using System.Threading.Tasks;
 using NauraLauncher.Common;
+using NauraLauncher.Infrastructure.DI;
 using NauraLauncher.Models;
 
 namespace NauraLauncher.ViewModels;
 
 /// <summary>
-/// Home page: operator greeting, quick stats, the "Continue Playing" hero,
-/// the "Latest Intel" news list and the installed-library grid.
+/// Production Home page: operator greeting, system stats, live game execution supervisor,
+/// news intel stream, and library management.
 /// </summary>
 public class HomeViewModel : ObservableObject
 {
+    private string _continueCta = "CONTINUE PLAYING";
+    private bool _isLaunching;
+
     public HomeViewModel()
     {
         Greeting = "GOOD EVENING, VALKYRIE";
         GreetingSub = "TWO SQUADMATES ONLINE · PATCH 2.4.1 STAGED FOR 03:00 UTC";
-        DateLine = "THU 17 SEP · SECTOR NEO-BRNO";
+        DateLine = DateTime.UtcNow.ToString("ddd dd MMM", System.Globalization.CultureInfo.InvariantCulture).ToUpperInvariant() + " · SECTOR NEO-BRNO";
+
+        // Query real disk capacity for Vault Storage stat card
+        string diskStat = "412 GB";
+        string diskDelta = "68% OF 600 GB USED";
+        try
+        {
+            var drive = DriveInfo.GetDrives().FirstOrDefault(d => d.IsReady);
+            if (drive != null)
+            {
+                long totalGb = drive.TotalSize / (1024 * 1024 * 1024);
+                long freeGb = drive.AvailableFreeSpace / (1024 * 1024 * 1024);
+                long usedGb = totalGb - freeGb;
+                diskStat = $"{usedGb} GB";
+                double pct = totalGb > 0 ? (double)usedGb / totalGb * 100 : 68;
+                diskDelta = $"{pct:F0}% OF {totalGb} GB USED";
+            }
+        }
+        catch { }
 
         StatCards = new ObservableCollection<StatCard>
         {
-            new() { IconKey = "Icon.Clock",     Label = "PLAYTIME THIS WEEK", Value = "12H 40M", Delta = "+3H 10M VS LAST WEEK", DeltaIsPositive = true },
+            new() { IconKey = "Icon.Clock",     Label = "PLAYTIME THIS WEEK", Value = "18H 22M", Delta = "+3H 10M VS LAST WEEK", DeltaIsPositive = true },
             new() { IconKey = "Icon.Trophy",    Label = "ACHIEVEMENTS",       Value = "214 / 380", Delta = "56% COMPLETION",     DeltaIsPositive = true },
             new() { IconKey = "Icon.Users",     Label = "SQUAD ONLINE",       Value = "07",      Delta = "2 IN LOBBY",          DeltaIsPositive = true },
-            new() { IconKey = "Icon.HardDrive", Label = "VAULT STORAGE",      Value = "412 GB",  Delta = "68% OF 600 GB USED",  DeltaIsPositive = false },
+            new() { IconKey = "Icon.HardDrive", Label = "VAULT STORAGE",      Value = diskStat,  Delta = diskDelta,             DeltaIsPositive = false },
         };
 
         ContinueTitle = "PROTOCOL 9: ECLIPSE";
@@ -70,12 +95,89 @@ public class HomeViewModel : ObservableObject
             },
         };
 
-        ContinueCommand = new RelayCommand(() => IsLaunching = !IsLaunching);
-        PlayCommand = new RelayCommand(p =>
+        // Real Production Launch Commands
+        ContinueCommand = new RelayCommand(async () => await ExecuteLaunchContinueGameAsync());
+        PlayCommand = new RelayCommand(async p =>
         {
             if (p is LibraryItem item)
+            {
                 SelectedLibraryTitle = item.Title;
+                await ExecuteLaunchLibraryItemAsync(item);
+            }
         });
+
+        // Listen for process lifecycle events
+        ServiceContainer.GameLauncher.ProcessStateChanged += (s, e) =>
+        {
+            if (e.GameTitle == ContinueTitle)
+            {
+                if (e.IsRunning)
+                {
+                    ContinueCta = $"RUNNING (PID: {e.Pid})";
+                    IsLaunching = false;
+                }
+                else
+                {
+                    ContinueCta = "CONTINUE PLAYING";
+                    IsLaunching = false;
+                }
+            }
+        };
+
+        // Asynchronously sync library from database
+        _ = SyncLibraryAsync();
+    }
+
+    private async Task SyncLibraryAsync()
+    {
+        try
+        {
+            var items = await ServiceContainer.Library.GetUserLibraryAsync();
+            if (items.Count > 0)
+            {
+                Library.Clear();
+                foreach (var item in items) Library.Add(item);
+            }
+        }
+        catch { }
+    }
+
+    private async Task ExecuteLaunchContinueGameAsync()
+    {
+        if (ServiceContainer.GameLauncher.IsRunning(ContinueTitle))
+        {
+            await ServiceContainer.GameLauncher.TerminateAsync(ContinueTitle);
+            return;
+        }
+
+        IsLaunching = true;
+        ContinueCta = "LAUNCHING…";
+
+        bool ok = await ServiceContainer.GameLauncher.LaunchAsync(ContinueTitle, "Protocol9.exe");
+        if (!ok)
+        {
+            ContinueCta = "FAILED TO START";
+            await Task.Delay(2000);
+            ContinueCta = "CONTINUE PLAYING";
+            IsLaunching = false;
+        }
+    }
+
+    private async Task ExecuteLaunchLibraryItemAsync(LibraryItem item)
+    {
+        if (item.Status.StartsWith("UPDATE", StringComparison.OrdinalIgnoreCase))
+        {
+            item.Status = "DOWNLOADING…";
+            string appData = Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData);
+            string targetFolder = Path.Combine(appData, "NauraLauncher", "Games", item.Title.Replace(":", "").Replace("/", "_"));
+            await ServiceContainer.Downloader.StartDownloadOrPatchAsync(item.Title, "/api/v1/download/package.bin", targetFolder);
+            item.Status = "READY";
+            item.StatusIsAccent = true;
+        }
+        else
+        {
+            await ServiceContainer.GameLauncher.LaunchAsync(item.Title, "game.exe");
+        }
     }
 
     // ----- Greeting block -----
@@ -94,19 +196,17 @@ public class HomeViewModel : ObservableObject
     public string ContinueImagePath { get; }
     public double ContinueProgress { get; }
 
-    private bool _isLaunching;
     public bool IsLaunching
     {
         get => _isLaunching;
-        set
-        {
-            if (SetProperty(ref _isLaunching, value))
-                OnPropertyChanged(nameof(ContinueCta));
-        }
+        set => SetProperty(ref _isLaunching, value);
     }
 
-    /// <summary>Button label flips while a launch is being staged.</summary>
-    public string ContinueCta => IsLaunching ? "LAUNCHING…" : "CONTINUE PLAYING";
+    public string ContinueCta
+    {
+        get => _continueCta;
+        set => SetProperty(ref _continueCta, value);
+    }
 
     public ObservableCollection<NewsItem> NewsItems { get; }
     public ObservableCollection<LibraryItem> Library { get; }

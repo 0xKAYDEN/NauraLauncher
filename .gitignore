@@ -1,0 +1,27 @@
+# .NET / Visual Studio build output
+bin/
+obj/
+.vs/
+*.user
+[Dd]ebug/
+[Rr]elease/
+x64/
+x86/
+*.dll
+*.pdb
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+.pytest_cache/
+
+# Node / Database runtime files
+node_modules/
+*.db
+*.db-shm
+*.db-wal
+server/data/
+*.enc
+.DS_Store

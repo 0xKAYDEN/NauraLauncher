@@ -14,6 +14,11 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" Version="8.0.0" />
+    <PackageReference Include="MySqlConnector" Version="2.3.7" />
+  </ItemGroup>
+
+  <ItemGroup>
     <Resource Include="Assets\hero_protocol9.png" />
     <Resource Include="Assets\card_monolith.png" />
     <Resource Include="Assets\card_synthesis.png" />
