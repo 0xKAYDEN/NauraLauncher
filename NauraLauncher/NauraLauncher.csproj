@@ -1,0 +1,25 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0-windows</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <UseWPF>true</UseWPF>
+    <RootNamespace>NauraLauncher</RootNamespace>
+    <AssemblyName>NauraLauncher</AssemblyName>
+    <ApplicationIcon></ApplicationIcon>
+    <Version>2.4.0</Version>
+    <Product>APEX / NauraLauncher</Product>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Resource Include="Assets\hero_protocol9.png" />
+    <Resource Include="Assets\card_monolith.png" />
+    <Resource Include="Assets\card_synthesis.png" />
+    <Resource Include="Assets\card_grey.png" />
+    <Resource Include="Assets\card_oscillation.png" />
+    <Resource Include="Assets\avatar.png" />
+  </ItemGroup>
+
+</Project>
