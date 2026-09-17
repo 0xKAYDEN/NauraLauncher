@@ -55,6 +55,13 @@ NauraLauncher/
 ├── Themes/                     # Design tokens, shadcn dark zinc controls, typography, icons
 └── Common/                     # ObservableObject, RelayCommand, Converters
 
+NauraLauncher.Server/           # Native C# .NET 8 Real-time Backend Server
+├── Program.cs                  # Entry point (HTTP/HTTPS + WebSocket listener)
+├── WebSocket/                  # RealtimeWebSocketServer, WebSocketClientConnection, TopicBroker
+├── Database/                   # MySqlDatabase with connection pooling & relational store
+├── Security/                   # PasswordHasher (PBKDF2), JwtTokenService (HMAC-SHA256)
+└── Api/                        # HttpApiHandler REST endpoints
+
 server/
 ├── certs/                      # X.509 SSL/TLS Certificate and Private Key
 ├── db/                         # Production MySQL DDL schema and initial seed data
@@ -64,10 +71,15 @@ server/
 
 ---
 
-## 🚀 Running the Backend Server
+## 🚀 Running the Real-time Backend Servers
 
+### Option A: Run C# .NET 8 Backend Server
 ```bash
-# Start backend server (TLS HTTPS on 8443, HTTP on 8080, WSS on /ws)
+dotnet run --project NauraLauncher.Server/NauraLauncher.Server.csproj
+```
+
+### Option B: Run Node Backend Server
+```bash
 node server/src/server.js
 ```
 

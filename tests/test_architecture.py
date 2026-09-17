@@ -78,6 +78,15 @@ class ArchitectureTests(unittest.TestCase):
         self.assertTrue(crt.is_file(), "Missing TLS certificate")
         self.assertTrue(key.is_file(), "Missing TLS private key")
 
+    def test_csharp_server_components_exist(self):
+        csharp_server = ROOT / "NauraLauncher.Server"
+        self.assertTrue((csharp_server / "NauraLauncher.Server.csproj").is_file())
+        self.assertTrue((csharp_server / "Program.cs").is_file())
+        self.assertTrue((csharp_server / "WebSocket" / "RealtimeWebSocketServer.cs").is_file())
+        self.assertTrue((csharp_server / "Database" / "MySqlDatabase.cs").is_file())
+        self.assertTrue((csharp_server / "Security" / "PasswordHasher.cs").is_file())
+        self.assertTrue((csharp_server / "Security" / "JwtTokenService.cs").is_file())
+
     def test_backend_integration_test_suite_passes(self):
         res = subprocess.run(
             ["node", str(SERVER / "tests" / "server.test.js")],

@@ -2,9 +2,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NauraLauncher", "NauraLauncher.csproj", "{B2C4F1A0-1D2E-4C3B-9A5F-8E7D6C5B4A30}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NauraLauncher", "NauraLauncher\NauraLauncher.csproj", "{B2C4F1A0-1D2E-4C3B-9A5F-8E7D6C5B4A30}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NauraLauncher.Server", "..\NauraLauncher.Server\NauraLauncher.Server.csproj", "{C3D5E2B1-2E3F-4D4C-8B6A-9F8E7D6C5B41}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "NauraLauncher.Server", "NauraLauncher.Server\NauraLauncher.Server.csproj", "{C3D5E2B1-2E3F-4D4C-8B6A-9F8E7D6C5B41}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
