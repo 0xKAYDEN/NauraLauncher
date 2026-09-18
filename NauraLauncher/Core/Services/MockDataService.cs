@@ -1,7 +1,7 @@
 using NauraLauncher.Domain.Entities;
 using NauraLauncher.Domain.Enums;
 
-namespace NauraLauncher.Application.Services;
+namespace NauraLauncher.Core.Services;
 
 /// <summary>
 /// Provides mock data for demo/prototype - Conquer Online themed

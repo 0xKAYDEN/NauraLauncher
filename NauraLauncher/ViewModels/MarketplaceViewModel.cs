@@ -1,6 +1,6 @@
 using System.Collections.ObjectModel;
-using NauraLauncher.Application.Interfaces;
-using NauraLauncher.Application.Services;
+using NauraLauncher.Core.Interfaces;
+using NauraLauncher.Core.Services;
 using NauraLauncher.Common;
 using NauraLauncher.Domain.Entities;
 using NauraLauncher.Domain.Enums;

@@ -1,7 +1,7 @@
 using NauraLauncher.Domain.Entities;
 using NauraLauncher.Domain.Enums;
 
-namespace NauraLauncher.Application.Interfaces;
+namespace NauraLauncher.Core.Interfaces;
 
 public interface IMarketplaceService
 {

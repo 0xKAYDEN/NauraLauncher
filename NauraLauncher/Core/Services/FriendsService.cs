@@ -1,7 +1,7 @@
-using NauraLauncher.Application.Interfaces;
+using NauraLauncher.Core.Interfaces;
 using NauraLauncher.Domain.Entities;
 
-namespace NauraLauncher.Application.Services;
+namespace NauraLauncher.Core.Services;
 
 public class FriendsService : IFriendsService
 {

@@ -1,9 +1,9 @@
-using NauraLauncher.Application.Interfaces;
+using NauraLauncher.Core.Interfaces;
 using NauraLauncher.Domain.Entities;
 using NauraLauncher.Domain.Enums;
 using NauraLauncher.Infrastructure.Security;
 
-namespace NauraLauncher.Application.Services;
+namespace NauraLauncher.Core.Services;
 
 /// <summary>
 /// In-memory auth service for demo - production would use MySQL repository

@@ -152,7 +152,7 @@
                                                 </Border.Background>
                                             </Border>
                                             <Border Style="{StaticResource Badge}" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="8,4" Background="#B3000000">
-                                                <TextBlock Text="{Binding Rarity}" FontWeight="Bold" FontSize="10" Foreground="{Binding GetRarityHex, Converter={StaticResource HexBrush}}"/>
+                                                <TextBlock Text="{Binding Rarity}" FontWeight="Bold" FontSize="10" Foreground="{Binding RarityHex, Converter={StaticResource HexBrush}}"/>
                                             </Border>
                                             <Border Style="{StaticResource Badge}" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="6,3" Background="{DynamicResource SurfaceBrush}" Visibility="{Binding Quantity, Converter={StaticResource BoolVis}}">
                                                 <TextBlock Text="{Binding Quantity}" FontWeight="Bold" FontSize="10" Foreground="{DynamicResource ForegroundBrush}"/>
@@ -202,7 +202,7 @@
                                 </Border>
                                 <StackPanel VerticalAlignment="Bottom" Margin="16">
                                     <Border Style="{StaticResource Badge}" Padding="8,4" HorizontalAlignment="Left" Background="#B3000000">
-                                        <TextBlock Text="{Binding SelectedItem.Rarity}" FontWeight="Bold" FontSize="11" Foreground="{Binding SelectedItem.GetRarityHex, Converter={StaticResource HexBrush}}"/>
+                                        <TextBlock Text="{Binding SelectedItem.Rarity}" FontWeight="Bold" FontSize="11" Foreground="{Binding SelectedItem.RarityHex, Converter={StaticResource HexBrush}}"/>
                                     </Border>
                                     <TextBlock Text="{Binding SelectedItem.Name}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource ForegroundBrush}" Margin="0,10,0,0" TextWrapping="Wrap"/>
                                 </StackPanel>

@@ -272,7 +272,7 @@
                                                     </Border>
                                                 </StackPanel>
                                                 <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
-                                                    <TextBlock Text="{Binding Item.Rarity}" FontSize="11" Foreground="{Binding Item.GetRarityHex, Converter={StaticResource HexBrush}}" FontWeight="Bold"/>
+                                                    <TextBlock Text="{Binding Item.Rarity}" FontSize="11" Foreground="{Binding Item.RarityHex, Converter={StaticResource HexBrush}}" FontWeight="Bold"/>
                                                     <TextBlock Text="•" Margin="6,0" Foreground="{DynamicResource SubtleForegroundBrush}"/>
                                                     <TextBlock Text="{Binding Item.Type}" Style="{StaticResource Label}" FontSize="10"/>
                                                     <TextBlock Text="•" Margin="6,0" Foreground="{DynamicResource SubtleForegroundBrush}"/>
@@ -338,7 +338,7 @@
                                             </Border>
                                             <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
                                                 <TextBlock Text="{Binding Item.Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}" TextWrapping="Wrap"/>
-                                                <TextBlock Text="{Binding Item.Rarity}" FontSize="11" Foreground="{Binding Item.GetRarityHex, Converter={StaticResource HexBrush}}" Margin="0,4,0,0"/>
+                                                <TextBlock Text="{Binding Item.Rarity}" FontSize="11" Foreground="{Binding Item.RarityHex, Converter={StaticResource HexBrush}}" Margin="0,4,0,0"/>
                                             </StackPanel>
                                         </Grid>
 
@@ -410,7 +410,7 @@
                                             </Border>
                                             <StackPanel Grid.Row="1" Margin="0,8,0,0">
                                                 <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource ForegroundBrush}" TextTrimming="CharacterEllipsis"/>
-                                                <TextBlock Text="{Binding Rarity}" FontSize="10" Foreground="{Binding GetRarityHex, Converter={StaticResource HexBrush}}" Margin="0,2,0,0"/>
+                                                <TextBlock Text="{Binding Rarity}" FontSize="10" Foreground="{Binding RarityHex, Converter={StaticResource HexBrush}}" Margin="0,2,0,0"/>
                                             </StackPanel>
                                             <Button Grid.Row="0" Grid.RowSpan="2" Opacity="0" Command="{Binding DataContext.SelectInventoryItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
                                         </Grid>

@@ -16,7 +16,7 @@ public class IconKeyConverter : IValueConverter
 
     public object? Convert(object value, Type targetType, object parameter, CultureInfo culture)
     {
-        if (value is string key && Application.Current?.TryFindResource(key) is Geometry g)
+        if (value is string key && System.Windows.Application.Current?.TryFindResource(key) is Geometry g)
             return g;
         return null;
     }

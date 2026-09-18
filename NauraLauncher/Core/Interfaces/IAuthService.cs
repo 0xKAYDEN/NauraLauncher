@@ -1,6 +1,6 @@
 using NauraLauncher.Domain.Entities;
 
-namespace NauraLauncher.Application.Interfaces;
+namespace NauraLauncher.Core.Interfaces;
 
 public class AuthResult
 {

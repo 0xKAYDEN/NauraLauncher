@@ -44,6 +44,11 @@ public class InventoryItem
     }
 
     public string GetRarityHex() => Rarity.ToHexColor();
+
+    // Property for XAML binding (WPF cannot bind to methods)
+    public string RarityHex => Rarity.ToHexColor();
+
+    public string RarityHexColor => Rarity.ToHexColor();
 }
 
 public class ConquerItemTemplate

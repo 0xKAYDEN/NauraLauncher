@@ -1,7 +1,7 @@
-using NauraLauncher.Application.Interfaces;
+using NauraLauncher.Core.Interfaces;
 using NauraLauncher.Domain.Entities;
 
-namespace NauraLauncher.Application.Services;
+namespace NauraLauncher.Core.Services;
 
 /// <summary>
 /// Voice service - handles voice call signaling and channel management
