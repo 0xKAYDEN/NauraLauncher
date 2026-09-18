@@ -1,0 +1,22 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <RootNamespace>NauraLauncher.Server</RootNamespace>
+    <AssemblyName>NauraLauncher.Server</AssemblyName>
+    <Version>2.4.0</Version>
+    <Product>NauraLauncher Server - Conquer Online</Product>
+    <Description>Backend server for NauraLauncher: Auth, Marketplace, Auction, Friends, Voice signaling</Description>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <!-- For MySQL - using MySqlConnector which is compatible with MySQL 5.6 -->
+    <PackageReference Include="MySqlConnector" Version="2.3.7" />
+    <!-- WebSocket and HTTP server - using built-in ASP.NET Core -->
+    <PackageReference Include="Microsoft.AspNetCore.WebSockets" Version="2.2.1" />
+  </ItemGroup>
+
+</Project>

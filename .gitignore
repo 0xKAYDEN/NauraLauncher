@@ -1,0 +1,10 @@
+__pycache__/
+*.pyc
+*.pyo
+bin/
+obj/
+.vs/
+*.user
+*.suo
+TestResults/
+*.log

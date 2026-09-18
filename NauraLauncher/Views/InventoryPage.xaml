@@ -1,0 +1,283 @@
+<UserControl x:Class="NauraLauncher.Views.InventoryPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ctrl="clr-namespace:NauraLauncher.Controls"
+             xmlns:cmn="clr-namespace:NauraLauncher.Common"
+             xmlns:vm="clr-namespace:NauraLauncher.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="880" d:DesignWidth="1504"
+             d:DataContext="{d:DesignInstance Type=vm:InventoryViewModel}">
+
+    <Grid Margin="28,8,28,0">
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
+
+        <!-- Toolbar -->
+        <Grid Grid.Row="0" Margin="0,0,0,18">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
+
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <StackPanel VerticalAlignment="Center" Margin="0,0,24,0">
+                    <TextBlock Text="INVENTORY" Style="{StaticResource Label}" Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                    <TextBlock Text="{Binding InventoryCount}" Style="{StaticResource CardHeader}" Margin="0,3,0,0"/>
+                </StackPanel>
+
+                <ItemsControl ItemsSource="{Binding Categories}" VerticalAlignment="Center">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Margin="0,0,8,0" Cursor="Hand"
+                                    Command="{Binding DataContext.SelectCategoryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource Button.Outline}">
+                                        <Setter Property="Padding" Value="16,9"/>
+                                        <Setter Property="FontSize" Value="12"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Value="True">
+                                                <DataTrigger.Binding>
+                                                    <MultiBinding Converter="{x:Static cmn:EqualityConverter.Instance}">
+                                                        <Binding/>
+                                                        <Binding Path="DataContext.SelectedCategory" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                    </MultiBinding>
+                                                </DataTrigger.Binding>
+                                                <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryForegroundBrush}"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <TextBlock Text="{Binding}"/>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
+
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Width="240" Height="40" Margin="0,0,12,0">
+                    <Grid Margin="14,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ctrl:IconControl Grid.Column="0" Data="{StaticResource Icon.Search}" Brush="{DynamicResource MutedForegroundBrush}" Width="16" Height="16" Margin="0,0,10,0"/>
+                        <Grid Grid.Column="1">
+                            <TextBox x:Name="SearchBox" Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="13"/>
+                            <TextBlock Text="Search inventory..." IsHitTestVisible="False" VerticalAlignment="Center" FontSize="13" Foreground="{DynamicResource SubtleForegroundBrush}">
+                                <TextBlock.Style>
+                                    <Style TargetType="TextBlock" BasedOn="{StaticResource Label}">
+                                        <Setter Property="Visibility" Value="Collapsed"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding Text, ElementName=SearchBox}" Value="">
+                                                <Setter Property="Visibility" Value="Visible"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </TextBlock.Style>
+                            </TextBlock>
+                        </Grid>
+                    </Grid>
+                </Border>
+                <Button Style="{StaticResource Button.Icon}" Width="40" Height="40" ToolTip="Refresh" Command="{Binding RefreshCommand}">
+                    <ctrl:IconControl Data="{StaticResource Icon.Refresh}" Brush="{DynamicResource ForegroundBrush}" Width="16" Height="16"/>
+                </Button>
+            </StackPanel>
+        </Grid>
+
+        <!-- Content -->
+        <Grid Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="18"/>
+                <ColumnDefinition Width="380"/>
+            </Grid.ColumnDefinitions>
+
+            <!-- Inventory Grid -->
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                <ItemsControl ItemsSource="{Binding FilteredInventory}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Border Width="200" Margin="0,0,14,14" Padding="12" Cursor="Hand">
+                                <Border.Style>
+                                    <Style TargetType="Border" BasedOn="{StaticResource Card}">
+                                        <Style.Triggers>
+                                            <DataTrigger Value="True">
+                                                <DataTrigger.Binding>
+                                                    <MultiBinding Converter="{x:Static cmn:EqualityConverter.Instance}">
+                                                        <Binding/>
+                                                        <Binding Path="DataContext.SelectedItem" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                    </MultiBinding>
+                                                </DataTrigger.Binding>
+                                                <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                <Setter Property="BorderThickness" Value="2"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Border.Style>
+                                <Grid>
+                                    <Grid.RowDefinitions>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                        <RowDefinition Height="Auto"/>
+                                    </Grid.RowDefinitions>
+
+                                    <Border Grid.Row="0" Height="100" CornerRadius="10" ClipToBounds="True">
+                                        <Grid>
+                                            <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
+                                            <Border>
+                                                <Border.Background>
+                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                        <GradientStop Color="#66000000" Offset="0"/>
+                                                        <GradientStop Color="#00000000" Offset="0.5"/>
+                                                    </LinearGradientBrush>
+                                                </Border.Background>
+                                            </Border>
+                                            <Border Style="{StaticResource Badge}" Margin="8" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="8,4" Background="#B3000000">
+                                                <TextBlock Text="{Binding Rarity}" FontWeight="Bold" FontSize="10" Foreground="{Binding GetRarityHex, Converter={StaticResource HexBrush}}"/>
+                                            </Border>
+                                            <Border Style="{StaticResource Badge}" Margin="8" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="6,3" Background="{DynamicResource SurfaceBrush}" Visibility="{Binding Quantity, Converter={StaticResource BoolVis}}">
+                                                <TextBlock Text="{Binding Quantity}" FontWeight="Bold" FontSize="10" Foreground="{DynamicResource ForegroundBrush}"/>
+                                            </Border>
+                                        </Grid>
+                                    </Border>
+
+                                    <TextBlock Grid.Row="1" Text="{Binding Name}" Style="{StaticResource Label}" FontWeight="Bold" Foreground="{DynamicResource ForegroundBrush}" Margin="2,10,0,0" TextTrimming="CharacterEllipsis" FontSize="12"/>
+                                    <TextBlock Grid.Row="2" Text="{Binding Type}" Style="{StaticResource Label}" Foreground="{DynamicResource SubtleForegroundBrush}" Margin="2,4,0,0" FontSize="10"/>
+
+                                    <StackPanel Grid.Row="3" Orientation="Horizontal" Margin="2,10,0,0">
+                                        <Border Style="{StaticResource Badge}" Padding="6,3" Background="{DynamicResource SurfaceBrush}">
+                                            <TextBlock Text="{Binding Plus, StringFormat='+{0}'}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" Visibility="{Binding Plus, Converter={StaticResource BoolVis}}"/>
+                                        </Border>
+                                        <Border Style="{StaticResource Badge}" Padding="6,3" Margin="6,0,0,0" Background="#33F5A524" Visibility="{Binding IsTradable, Converter={StaticResource BoolVis}}">
+                                            <TextBlock Text="TRADABLE" FontSize="9" FontWeight="Bold" Foreground="#FFF5A524"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Button Grid.Row="0" Grid.RowSpan="4" Opacity="0" Command="{Binding DataContext.SelectItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                </Grid>
+                            </Border>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+
+            <!-- Detail Panel -->
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="22,20" VerticalAlignment="Top">
+                <StackPanel>
+                    <StackPanel Visibility="{Binding SelectedItem, Converter={StaticResource StrVis}}">
+                        <TextBlock Text="SELECT AN ITEM" Style="{StaticResource Label}" Foreground="{DynamicResource SubtleForegroundBrush}" HorizontalAlignment="Center" Margin="0,40,0,0"/>
+                        <TextBlock Text="Choose an item from your inventory to view details and trading options" Style="{StaticResource Label}" Foreground="{DynamicResource SubtleForegroundBrush}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,10,0,0"/>
+                    </StackPanel>
+
+                    <StackPanel Visibility="{Binding SelectedItem, Converter={StaticResource BoolVis}}">
+                        <Border Height="180" CornerRadius="12" ClipToBounds="True" Margin="0,0,0,16">
+                            <Grid>
+                                <Image Source="{Binding SelectedItem.ImagePath}" Stretch="UniformToFill"/>
+                                <Border>
+                                    <Border.Background>
+                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                            <GradientStop Color="#00000000" Offset="0.0"/>
+                                            <GradientStop Color="#CC07080A" Offset="1.0"/>
+                                        </LinearGradientBrush>
+                                    </Border.Background>
+                                </Border>
+                                <StackPanel VerticalAlignment="Bottom" Margin="16">
+                                    <Border Style="{StaticResource Badge}" Padding="8,4" HorizontalAlignment="Left" Background="#B3000000">
+                                        <TextBlock Text="{Binding SelectedItem.Rarity}" FontWeight="Bold" FontSize="11" Foreground="{Binding SelectedItem.GetRarityHex, Converter={StaticResource HexBrush}}"/>
+                                    </Border>
+                                    <TextBlock Text="{Binding SelectedItem.Name}" FontSize="18" FontWeight="Bold" Foreground="{DynamicResource ForegroundBrush}" Margin="0,10,0,0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Grid>
+                        </Border>
+
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="TYPE" Style="{StaticResource Label}" FontSize="10"/>
+                                <TextBlock Text="{Binding SelectedItem.Type}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}" Margin="0,4,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="LEVEL REQ" Style="{StaticResource Label}" FontSize="10"/>
+                                <TextBlock Text="{Binding SelectedItem.LevelRequired}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Grid Margin="0,0,0,16">
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="*"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <StackPanel Grid.Column="0">
+                                <TextBlock Text="ENHANCEMENT" Style="{StaticResource Label}" FontSize="10"/>
+                                <TextBlock Text="{Binding SelectedItem.Plus, StringFormat='+{0}'}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource AccentBrush}" Margin="0,4,0,0"/>
+                            </StackPanel>
+                            <StackPanel Grid.Column="1">
+                                <TextBlock Text="SOCKETS" Style="{StaticResource Label}" FontSize="10"/>
+                                <TextBlock Text="{Binding SelectedItem.SocketCount}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}" Margin="0,4,0,0"/>
+                            </StackPanel>
+                        </Grid>
+
+                        <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="8" Padding="12" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="DESCRIPTION" Style="{StaticResource Label}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
+                                <TextBlock Text="{Binding SelectedItem.Description}" Style="{StaticResource Body}" FontSize="12" Foreground="{DynamicResource MutedForegroundBrush}" TextWrapping="Wrap"/>
+                            </StackPanel>
+                        </Border>
+
+                        <StackPanel Visibility="{Binding SelectedItem.SocketGems, Converter={StaticResource StrVis}}" Margin="0,0,0,16">
+                            <TextBlock Text="SOCKET GEMS" Style="{StaticResource Label}" FontSize="10" FontWeight="Bold" Margin="0,0,0,6"/>
+                            <TextBlock Text="{Binding SelectedItem.SocketGems}" Style="{StaticResource Label}" Foreground="{DynamicResource AccentBrush}" TextWrapping="Wrap" FontSize="11"/>
+                        </StackPanel>
+
+                        <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,0,0,16"/>
+
+                        <TextBlock Text="TRADE OPTIONS" Style="{StaticResource PanelTitle}" Margin="0,0,0,12"/>
+
+                        <Button Style="{StaticResource Button.Primary}" Height="44" Margin="0,0,0,10" IsEnabled="{Binding SelectedItem.IsTradable}">
+                            <StackPanel Orientation="Horizontal">
+                                <ctrl:IconControl Data="{StaticResource Icon.Gold}" Brush="{DynamicResource PrimaryForegroundBrush}" Width="16" Height="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="LIST IN MARKETPLACE" FontWeight="Bold" FontSize="12"/>
+                            </StackPanel>
+                        </Button>
+
+                        <Button Style="{StaticResource Button.Outline}" Height="44" Margin="0,0,0,10" IsEnabled="{Binding SelectedItem.IsTradable}">
+                            <StackPanel Orientation="Horizontal">
+                                <ctrl:IconControl Data="{StaticResource Icon.Gavel}" Brush="{DynamicResource ForegroundBrush}" Width="16" Height="16" Margin="0,0,8,0"/>
+                                <TextBlock Text="PUT IN AUCTION" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource ForegroundBrush}"/>
+                            </StackPanel>
+                        </Button>
+
+                        <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
+                            <ctrl:IconControl Data="{StaticResource Icon.Info}" Brush="{DynamicResource SubtleForegroundBrush}" Width="12" Height="12" Margin="0,0,6,0"/>
+                            <TextBlock Text="{Binding SelectedItem.IsBound, Converter={StaticResource BoolVis}}" Visibility="Collapsed"/>
+                            <TextBlock Text="Bound items cannot be traded" Style="{StaticResource Label}" FontSize="10" Foreground="{DynamicResource SubtleForegroundBrush}" Visibility="{Binding SelectedItem.IsBound, Converter={StaticResource BoolVis}}"/>
+                            <TextBlock Text="Tradable • Unbound" Style="{StaticResource Label}" FontSize="10" Foreground="{DynamicResource AccentBrush}" Visibility="{Binding SelectedItem.IsTradable, Converter={StaticResource BoolVis}}"/>
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </Grid>
+    </Grid>
+</UserControl>

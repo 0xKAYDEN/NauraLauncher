@@ -8,7 +8,7 @@
         xmlns:vm="clr-namespace:NauraLauncher.ViewModels"
         xmlns:views="clr-namespace:NauraLauncher.Views"
         mc:Ignorable="d"
-        Title="APEX — NauraLauncher"
+        Title="NauraLauncher — Conquer Online"
         Width="1560" Height="1000"
         MinWidth="1200" MinHeight="820"
         WindowStartupLocation="CenterScreen"
@@ -27,49 +27,41 @@
         <vm:MainViewModel />
     </Window.DataContext>
 
-    <!-- The root border paints the background AND owns the 16px corner clip.
-         MainWindow.xaml.cs squares both off while the window is maximized. -->
     <Border x:Name="RootBorder" Background="{DynamicResource BackgroundBrush}" CornerRadius="16">
-        <Grid Margin="0">
+        <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto" />   <!-- header (persistent) -->
-                <RowDefinition Height="*" />      <!-- page host -->
-                <RowDefinition Height="Auto" />   <!-- status bar (persistent) -->
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="*" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
 
-            <!-- ============================================================
-                 HEADER  (persistent across every page)
-                 ============================================================ -->
+            <!-- HEADER -->
             <Grid Grid.Row="0" Height="72" Margin="28,0,20,0">
                 <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="Auto" />   <!-- logo -->
-                    <ColumnDefinition Width="*" />      <!-- nav (centered) -->
-                    <ColumnDefinition Width="Auto" />   <!-- right cluster -->
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="*" />
+                    <ColumnDefinition Width="Auto" />
                 </Grid.ColumnDefinitions>
 
-                <!-- Logo cluster -->
+                <!-- Logo cluster - Conquer Online themed -->
                 <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center"
-                                Margin="0,0,20,0">
-                        <Ellipse Width="7" Height="7" Fill="{DynamicResource SubtleForegroundBrush}" Margin="0,0,6,0"/>
-                        <Ellipse Width="7" Height="7" Fill="{DynamicResource SubtleForegroundBrush}" Margin="0,0,6,0"/>
-                        <Ellipse Width="7" Height="7" Fill="{DynamicResource SubtleForegroundBrush}"/>
-                    </StackPanel>
-
-                    <Border Width="30" Height="30" CornerRadius="8"
-                            BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1"
-                            Background="{DynamicResource MutedBrush}" Margin="0,0,10,0">
-                        <ctrl:IconControl Data="{StaticResource Icon.Target}"
-                                          Brush="{DynamicResource ForegroundBrush}"
-                                          StrokeWidth="1.6" Width="18" Height="18"/>
+                    <Border Width="34" Height="34" CornerRadius="10"
+                            BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1"
+                            Background="#2634D399" Margin="0,0,12,0">
+                        <ctrl:IconControl Data="{StaticResource Icon.Dragon}"
+                                          Brush="{DynamicResource AccentBrush}"
+                                          StrokeWidth="1.6" Width="20" Height="20"/>
                     </Border>
 
-                    <TextBlock Text="APEX" FontSize="21" FontWeight="Bold"
-                               FontFamily="{DynamicResource DisplayFont}"
-                               Foreground="{DynamicResource ForegroundBrush}"
-                               VerticalAlignment="Center"/>
+                    <StackPanel VerticalAlignment="Center">
+                        <TextBlock Text="NAURA" FontSize="20" FontWeight="Bold"
+                                   FontFamily="{DynamicResource DisplayFont}"
+                                   Foreground="{DynamicResource ForegroundBrush}"/>
+                        <TextBlock Text="CONQUER ONLINE" FontSize="9" FontWeight="Bold"
+                                   Foreground="{DynamicResource AccentBrush}"
+                                   Margin="0,-2,0,0"/>
+                    </StackPanel>
 
-                    <!-- version pill -->
                     <Border Style="{StaticResource Badge}" Margin="16,0,0,0" Padding="10,5"
                             Background="{DynamicResource MutedBrush}">
                         <StackPanel Orientation="Horizontal">
@@ -88,7 +80,8 @@
                         Background="{DynamicResource SurfaceBrush}"
                         BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
                         CornerRadius="25" Padding="6,5"
-                        WindowChrome.IsHitTestVisibleInChrome="True">
+                        WindowChrome.IsHitTestVisibleInChrome="True"
+                        Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolVis}}">
                     <ItemsControl ItemsSource="{Binding NavItems}">
                         <ItemsControl.ItemsPanel>
                             <ItemsPanelTemplate>
@@ -126,14 +119,15 @@
                     </ItemsControl>
                 </Border>
 
-                <!-- Right cluster: search + credits + user + window buttons -->
+                <!-- Right cluster -->
                 <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center"
                             WindowChrome.IsHitTestVisibleInChrome="True">
 
-                    <!-- Search -->
+                    <!-- Search - only when authenticated -->
                     <Border Background="{DynamicResource SurfaceBrush}"
                             BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                            CornerRadius="20" Width="240" Height="40" Margin="0,0,14,0">
+                            CornerRadius="20" Width="220" Height="40" Margin="0,0,12,0"
+                            Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolVis}}">
                         <Grid Margin="14,0">
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
@@ -147,7 +141,7 @@
                                          VerticalContentAlignment="Center"
                                          Foreground="{DynamicResource ForegroundBrush}"
                                          CaretBrush="{DynamicResource ForegroundBrush}" FontSize="13"/>
-                                <TextBlock Text="Search gallery..." IsHitTestVisible="False"
+                                <TextBlock Text="Search market..." IsHitTestVisible="False"
                                            VerticalAlignment="Center" FontSize="13"
                                            Foreground="{DynamicResource SubtleForegroundBrush}">
                                     <TextBlock.Style>
@@ -165,42 +159,123 @@
                         </Grid>
                     </Border>
 
-                    <!-- Credits -->
-                    <Border Background="{DynamicResource SurfaceBrush}"
-                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                            CornerRadius="20" Height="40" Padding="16,0" Margin="0,0,14,0">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <TextBlock Text="CREDITS" Style="{StaticResource Label}"
-                                       Foreground="{DynamicResource MutedForegroundBrush}"
-                                       VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <TextBlock Text="{Binding Credits}" FontWeight="Bold" FontSize="13"
-                                       FontFamily="{DynamicResource MonoFont}"
-                                       Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
-                        </StackPanel>
-                    </Border>
-
-                    <!-- User -->
-                    <Border Background="{DynamicResource SurfaceBrush}"
-                            BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1"
-                            CornerRadius="25" Height="46" Padding="6,4,16,4">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <Border Width="36" Height="36" CornerRadius="15" Margin="0,0,10,0">
-                                <Border.Background>
-                                    <ImageBrush ImageSource="Assets/avatar.png" Stretch="UniformToFill"/>
-                                </Border.Background>
-                            </Border>
-                            <StackPanel VerticalAlignment="Center">
-                                <TextBlock Text="{Binding UserName}" FontWeight="Bold" FontSize="12"
-                                           Foreground="{DynamicResource ForegroundBrush}"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
-                                    <Ellipse Width="6" Height="6" Fill="{DynamicResource AccentBrush}"
-                                             VerticalAlignment="Center" Margin="0,0,5,0"/>
-                                    <TextBlock Text="{Binding UserState}" Style="{StaticResource Label}"
-                                               Foreground="{DynamicResource MutedForegroundBrush}" FontSize="10"/>
-                                </StackPanel>
+                    <!-- Wallet - CPs, Gold, Silver -->
+                    <StackPanel Orientation="Horizontal" Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolVis}}">
+                        <!-- CPs -->
+                        <Border Background="{DynamicResource SurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="20" Height="40" Padding="14,0" Margin="0,0,8,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <ctrl:IconControl Data="{StaticResource Icon.Gem}" Brush="{DynamicResource AccentBrush}" Width="14" Height="14" Margin="0,0,6,0"/>
+                                <TextBlock Text="{Binding CpsDisplay}" FontWeight="Bold" FontSize="12"
+                                           FontFamily="{DynamicResource MonoFont}"
+                                           Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
                             </StackPanel>
-                        </StackPanel>
-                    </Border>
+                        </Border>
+
+                        <!-- Gold -->
+                        <Border Background="{DynamicResource SurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
+                                CornerRadius="20" Height="40" Padding="14,0" Margin="0,0,12,0">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <ctrl:IconControl Data="{StaticResource Icon.Gold}" Brush="#FFF5A524" Width="14" Height="14" Margin="0,0,6,0"/>
+                                <TextBlock Text="{Binding GoldDisplay}" FontWeight="Bold" FontSize="12"
+                                           FontFamily="{DynamicResource MonoFont}"
+                                           Foreground="#FFF5A524" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
+
+                    <!-- User area with dropdown -->
+                    <Grid>
+                        <Border Background="{DynamicResource SurfaceBrush}"
+                                BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1"
+                                CornerRadius="25" Height="46" Padding="6,4,14,4"
+                                Cursor="Hand"
+                                Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolVis}}">
+                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                <Border Width="34" Height="34" CornerRadius="12" Margin="0,0,10,0">
+                                    <Border.Background>
+                                        <ImageBrush ImageSource="{Binding AvatarPath}" Stretch="UniformToFill"/>
+                                    </Border.Background>
+                                </Border>
+                                <StackPanel VerticalAlignment="Center" Margin="0,0,8,0">
+                                    <TextBlock Text="{Binding UserName}" FontWeight="Bold" FontSize="12"
+                                               Foreground="{DynamicResource ForegroundBrush}"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,1,0,0">
+                                        <Ellipse Width="6" Height="6" Fill="{DynamicResource AccentBrush}"
+                                                 VerticalAlignment="Center" Margin="0,0,5,0"/>
+                                        <TextBlock Text="{Binding UserLevel}" Style="{StaticResource Label}"
+                                                   Foreground="{DynamicResource MutedForegroundBrush}" FontSize="10"/>
+                                    </StackPanel>
+                                </StackPanel>
+                                <ctrl:IconControl Data="{StaticResource Icon.ChevronDown}" Brush="{DynamicResource MutedForegroundBrush}" Width="14" Height="14" VerticalAlignment="Center"/>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Invisible button for click area -->
+                        <Button Opacity="0" Command="{Binding ShowUserMenuCommand}" Cursor="Hand"
+                                Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolVis}}"/>
+
+                        <!-- User dropdown menu -->
+                        <Border Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1"
+                                CornerRadius="14" Padding="8" Width="220"
+                                HorizontalAlignment="Right" VerticalAlignment="Top" Margin="0,54,0,0"
+                                Visibility="{Binding IsUserMenuOpen, Converter={StaticResource BoolVis}}">
+                            <Border.Effect>
+                                <DropShadowEffect Color="Black" Opacity="0.5" BlurRadius="20" ShadowDepth="4"/>
+                            </Border.Effect>
+                            <StackPanel>
+                                <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="10" Padding="12,10" Margin="0,0,0,8">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Width="40" Height="40" CornerRadius="10" Margin="0,0,12,0">
+                                            <Border.Background>
+                                                <ImageBrush ImageSource="{Binding AvatarPath}" Stretch="UniformToFill"/>
+                                            </Border.Background>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding UserName}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}"/>
+                                            <TextBlock Text="{Binding UserClass}" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+
+                                <Button Style="{StaticResource Button.Ghost}" Padding="12,10" HorizontalContentAlignment="Left" Command="{Binding ShowProfileCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ctrl:IconControl Data="{StaticResource Icon.User}" Brush="{DynamicResource ForegroundBrush}" Width="16" Height="16" Margin="0,0,12,0"/>
+                                        <TextBlock Text="PROFILE" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource ForegroundBrush}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource Button.Ghost}" Padding="12,10" HorizontalContentAlignment="Left" Command="{Binding ShowInventoryCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ctrl:IconControl Data="{StaticResource Icon.Inventory}" Brush="{DynamicResource ForegroundBrush}" Width="16" Height="16" Margin="0,0,12,0"/>
+                                        <TextBlock Text="INVENTORY" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource ForegroundBrush}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Button Style="{StaticResource Button.Ghost}" Padding="12,10" HorizontalContentAlignment="Left" Command="{Binding SelectNavCommand}" CommandParameter="Friends">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ctrl:IconControl Data="{StaticResource Icon.Users}" Brush="{DynamicResource ForegroundBrush}" Width="16" Height="16" Margin="0,0,12,0"/>
+                                        <TextBlock Text="FRIENDS &amp; VOICE" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource ForegroundBrush}"/>
+                                    </StackPanel>
+                                </Button>
+
+                                <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,8"/>
+
+                                <Button Style="{StaticResource Button.Ghost}" Padding="12,10" HorizontalContentAlignment="Left" Command="{Binding LogoutCommand}">
+                                    <StackPanel Orientation="Horizontal">
+                                        <ctrl:IconControl Data="{StaticResource Icon.Logout}" Brush="{DynamicResource DestructiveBrush}" Width="16" Height="16" Margin="0,0,12,0"/>
+                                        <TextBlock Text="LOGOUT" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource DestructiveBrush}"/>
+                                    </StackPanel>
+                                </Button>
+                            </StackPanel>
+                        </Border>
+                    </Grid>
 
                     <!-- Window controls -->
                     <StackPanel Orientation="Horizontal" Margin="14,0,0,0" VerticalAlignment="Center">
@@ -222,39 +297,57 @@
                 </StackPanel>
             </Grid>
 
-            <!-- ============================================================
-                 PAGE HOST : one page per nav tab, swapped by Visibility.
-                 Each wrapper Grid inherits the shell DataContext so it can
-                 read IsHome / IsMarketplace / IsAuction / IsSettings, while
-                 the page itself is re-scoped to its own sub view model.
-                 ============================================================ -->
+            <!-- PAGE HOST -->
             <Grid Grid.Row="1">
-                <Grid Visibility="{Binding IsHome, Converter={StaticResource BoolVis}}">
-                    <views:HomePage DataContext="{Binding Home}" />
+                <!-- Auth Page - shown when not authenticated -->
+                <Grid Visibility="{Binding IsAuth, Converter={StaticResource BoolVis}}">
+                    <views:AuthPage DataContext="{Binding Auth}" />
                 </Grid>
 
-                <Grid Visibility="{Binding IsMarketplace, Converter={StaticResource BoolVis}}">
-                    <views:MarketplacePage DataContext="{Binding Marketplace}" />
+                <!-- Authenticated pages -->
+                <Grid Visibility="{Binding IsAuthenticated, Converter={StaticResource BoolVis}}">
+                    <Grid Visibility="{Binding IsHome, Converter={StaticResource BoolVis}}">
+                        <views:HomePage DataContext="{Binding Home}" />
+                    </Grid>
+
+                    <Grid Visibility="{Binding IsMarketplace, Converter={StaticResource BoolVis}}">
+                        <views:MarketplacePage DataContext="{Binding Marketplace}" />
+                    </Grid>
+
+                    <Grid Visibility="{Binding IsAuction, Converter={StaticResource BoolVis}}">
+                        <views:AuctionPage DataContext="{Binding Auction}" />
+                    </Grid>
+
+                    <Grid Visibility="{Binding IsFriends, Converter={StaticResource BoolVis}}">
+                        <views:FriendsPage DataContext="{Binding Friends}" />
+                    </Grid>
+
+                    <Grid Visibility="{Binding IsSettings, Converter={StaticResource BoolVis}}">
+                        <views:SettingsPage DataContext="{Binding Settings}" />
+                    </Grid>
+
+                    <Grid Visibility="{Binding IsProfile, Converter={StaticResource BoolVis}}">
+                        <views:ProfilePage DataContext="{Binding Profile}" />
+                    </Grid>
+
+                    <Grid Visibility="{Binding IsInventory, Converter={StaticResource BoolVis}}">
+                        <views:InventoryPage DataContext="{Binding Inventory}" />
+                    </Grid>
                 </Grid>
 
-                <Grid Visibility="{Binding IsAuction, Converter={StaticResource BoolVis}}">
-                    <views:AuctionPage DataContext="{Binding Auction}" />
-                </Grid>
-
-                <Grid Visibility="{Binding IsSettings, Converter={StaticResource BoolVis}}">
-                    <views:SettingsPage DataContext="{Binding Settings}" />
-                </Grid>
+                <!-- Overlay to close user menu when clicking outside -->
+                <Border Background="Transparent" Visibility="{Binding IsUserMenuOpen, Converter={StaticResource BoolVis}}">
+                    <Button Opacity="0" Command="{Binding CloseUserMenuCommand}"/>
+                </Border>
             </Grid>
 
-            <!-- ============================================================
-                 STATUS BAR  (persistent across every page)
-                 ============================================================ -->
+            <!-- STATUS BAR -->
             <Border Grid.Row="2" Background="{DynamicResource SurfaceBrush}"
                     BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,1,0,0"
                     Padding="28,0" Height="46" Margin="0,18,0,0">
                 <Grid>
                     <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <ctrl:IconControl Data="{StaticResource Icon.CheckCircle}"
+                        <ctrl:IconControl Data="{StaticResource Icon.Dragon}"
                                           Brush="{DynamicResource AccentBrush}"
                                           StrokeWidth="1.8" Width="16" Height="16" Margin="0,0,8,0"/>
                         <TextBlock Text="{Binding SystemState}" Style="{StaticResource Label}"
@@ -263,7 +356,7 @@
 
                         <Rectangle Width="1" Height="16" Fill="{DynamicResource BorderBrush}" Margin="20,0"/>
 
-                        <ctrl:IconControl Data="{StaticResource Icon.Download}"
+                        <ctrl:IconControl Data="{StaticResource Icon.Gold}"
                                           Brush="{DynamicResource MutedForegroundBrush}"
                                           StrokeWidth="1.8" Width="15" Height="15" Margin="0,0,8,0"/>
                         <TextBlock Text="{Binding PatchLabel}" Style="{StaticResource Label}"
@@ -284,26 +377,26 @@
                     </StackPanel>
 
                     <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
-                        <ctrl:IconControl Data="{StaticResource Icon.Mic}"
+                        <ctrl:IconControl Data="{StaticResource Icon.Phone}"
                                           Brush="{DynamicResource MutedForegroundBrush}"
                                           StrokeWidth="1.8" Width="14" Height="14" Margin="0,0,8,0"/>
-                        <TextBlock Text="COMM LINK ACTIVE" Style="{StaticResource Label}"
+                        <TextBlock Text="VOICE SERVER ACTIVE" Style="{StaticResource Label}"
                                    Foreground="{DynamicResource MutedForegroundBrush}" VerticalAlignment="Center"/>
 
                         <Rectangle Width="1" Height="16" Fill="{DynamicResource BorderBrush}" Margin="20,0"/>
 
-                        <ctrl:IconControl Data="{StaticResource Icon.Headphones}"
+                        <ctrl:IconControl Data="{StaticResource Icon.Users}"
                                           Brush="{DynamicResource MutedForegroundBrush}"
                                           StrokeWidth="1.8" Width="14" Height="14" Margin="0,0,8,0"/>
-                        <TextBlock Text="SURROUND 7.1" Style="{StaticResource Label}"
+                        <TextBlock Text="GUILD VOICE READY" Style="{StaticResource Label}"
                                    Foreground="{DynamicResource MutedForegroundBrush}" VerticalAlignment="Center"/>
 
                         <Rectangle Width="1" Height="16" Fill="{DynamicResource BorderBrush}" Margin="20,0"/>
 
-                        <ctrl:IconControl Data="{StaticResource Icon.Cloud}"
+                        <ctrl:IconControl Data="{StaticResource Icon.CheckCircle}"
                                           Brush="{DynamicResource MutedForegroundBrush}"
                                           StrokeWidth="1.8" Width="15" Height="15" Margin="0,0,8,0"/>
-                        <TextBlock Text="CLOUD SYNCED" Style="{StaticResource Label}"
+                        <TextBlock Text="TWIN CITY SYNCED" Style="{StaticResource Label}"
                                    Foreground="{DynamicResource MutedForegroundBrush}" VerticalAlignment="Center"/>
                     </StackPanel>
                 </Grid>

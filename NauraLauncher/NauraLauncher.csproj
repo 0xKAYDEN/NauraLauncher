@@ -10,16 +10,28 @@
     <AssemblyName>NauraLauncher</AssemblyName>
     <ApplicationIcon></ApplicationIcon>
     <Version>2.4.0</Version>
-    <Product>APEX / NauraLauncher</Product>
+    <Product>NauraLauncher - Conquer Online</Product>
+    <Description>Conquer Online Launcher with Marketplace, Auction, Friends and Voice</Description>
   </PropertyGroup>
 
   <ItemGroup>
+    <!-- Legacy assets -->
     <Resource Include="Assets\hero_protocol9.png" />
     <Resource Include="Assets\card_monolith.png" />
     <Resource Include="Assets\card_synthesis.png" />
     <Resource Include="Assets\card_grey.png" />
     <Resource Include="Assets\card_oscillation.png" />
     <Resource Include="Assets\avatar.png" />
+    <!-- Conquer Online assets -->
+    <Resource Include="Assets\hero_conquer.png" />
+    <Resource Include="Assets\card_trojan.png" />
+    <Resource Include="Assets\card_warrior.png" />
+    <Resource Include="Assets\card_archer.png" />
+    <Resource Include="Assets\card_taoist.png" />
+    <Resource Include="Assets\card_ninja.png" />
+    <Resource Include="Assets\card_monk.png" />
+    <Resource Include="Assets\avatar_conquer.png" />
+    <Resource Include="Assets\item_dragonball.png" />
   </ItemGroup>
 
 </Project>

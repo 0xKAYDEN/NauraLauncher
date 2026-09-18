@@ -1,28 +1,81 @@
-# NauraLauncher — “APEX” Marketplace Shell (WPF)
+# NauraLauncher — Conquer Online Edition
 
-A pixel-faithful **WPF (.NET 8)** conversion of the supplied **APEX** game‑marketplace
-launcher design, built with an MVVM architecture and a hand‑crafted component
-library that re-creates the look and feel of [shadcn/ui](https://ui.shadcn.com/)
-natively in XAML.
+Conquer Online launcher — WPF / .NET 8, clean architecture, no third-party dependencies for UI.
 
-> shadcn/ui is a React/Tailwind component collection and cannot run inside WPF
-> directly. Instead, its design language — the *zinc* dark palette, soft radii,
-> subtle borders, pill buttons, badges, cards and focus rings — has been rebuilt
-> as reusable WPF `Style`s and controls so the app looks and behaves like shadcn
-> while remaining 100% native XAML.
+## Quick Start
 
----
+```powershell
+dotnet restore
+dotnet run
+```
 
-## Requirements
+Login with `admin` / `admin123` or any mock hero: DragonLord, FireQueen, ShadowNinja, HolyMonk, PirateKing (any password for mock).
 
-- **Windows 10/11**
-- **.NET 8 SDK** (`net8.0-windows`)
-- Visual Studio 2022 (17.8+) **or** `dotnet` CLI
+## What's New - Conquer Online Overhaul
 
-> WPF is Windows‑only. The project was authored in a Linux sandbox, so it must be
-> built/run on Windows.
+### Auth & User Panel
+- `Views/AuthPage.xaml` - Split hero (Twin City) + login/register forms, demo accounts info
+- `MainWindow.xaml` - User area clickable → dropdown with Profile, Inventory, Friends & Voice, Logout
+- `ViewModels/AuthViewModel.cs` - Login/Register with mode switching, PBKDF2 hashing
+- `ViewModels/MainViewModel.cs` - Auth state, wallet (CPs, Gold), user menu, propagates UserId to sub VMs
 
-## Build & Run
+### Wallet - CPs, Gold, Silver
+- `Domain/Entities/User.cs` - User with Wallet (Cps, BoundCps, Gold, Silver)
+- `Domain/Enums/CurrencyType.cs` - Cps, Gold, Silver, BoundCps with display names
+- `Application/Services/WalletService.cs` - Add, Deduct, Transfer
+- Header shows CPs (emerald gem) + Gold (gold coin) pills
+
+### Inventory
+- `Domain/Entities/InventoryItem.cs` - Conquer items: Dragon Blade +12 Super 2-socket, Super Dragon Gem, Dragon Ball x27, etc.
+- `ViewModels/InventoryViewModel.cs` - Filter by type, search, select
+- `Views/InventoryPage.xaml` - Grid + detail panel with trade options
+
+### Marketplace - Twin City Market
+- `Domain/Entities/MarketplaceListing.cs` - Listing with price, currency, status, seller, item
+- `Application/Services/MarketplaceService.cs` - Create listing (removes from inventory), Cancel (returns item), Buy (deduct buyer, pay seller, transfer item)
+- `ViewModels/MarketplaceViewModel.cs` - Tabs: Browse, My Listings, Sell (from inventory)
+- `Views/MarketplacePage.xaml` - Hero spotlight + listings with Buy + My Listings + Sell from inventory
+
+### Auction House
+- `Domain/Entities/AuctionLot.cs` - Lot with starting bid, current bid, buyout, bidder, expiry
+- `Application/Services/AuctionService.cs` - Create lot, Cancel (if no bids), Place bid (refund previous), Buyout
+- `ViewModels/AuctionViewModel.cs` - Tabs: Browse, My Lots, Sell, plus live lot with countdown and bid panel
+- `Views/AuctionPage.xaml` - Summary cards + active lots list + live lot + bid panel + My Lots + Sell
+
+### Friends & Voice
+- `Domain/Entities/Friend.cs` - Friendship, BlockedUser, FriendRequest
+- `Domain/Entities/VoiceCall.cs` - VoiceChannel, VoiceCall, VoiceSignalingMessage
+- `Application/Services/FriendsService.cs` - Add (auto-accept mock), Remove, Block/Unblock, Requests, Search
+- `Application/Services/VoiceService.cs` - Channel management, call lifecycle, signaling event
+- `ViewModels/FriendsViewModel.cs` - Friends, Online, Requests, Blocked, Search, Voice calls
+- `Views/FriendsPage.xaml` - Online friends with voice call buttons, requests, blocked, search
+
+### Backend Server
+- `NauraLauncher.Server/Program.cs` - Starts API (8080) + Voice (8081), checks MySQL 5.6 compat
+- `NauraLauncher.Server/Api/ApiServer.cs` - REST: auth, marketplace, auction, friends, inventory, wallet
+- `NauraLauncher.Server/Realtime/VoiceSignalingServer.cs` - WebSocket signaling for WebRTC: offer/answer/ice-candidate, call lifecycle
+- `NauraLauncher.Server/Infrastructure/` - DatabaseConfig, MySqlConnectionFactory (MySqlConnector 2.3.7 supports MySQL 5.6)
+- `Database/schema.sql` - MySQL 5.6 compatible: no JSON (TEXT), TIMESTAMP DEFAULT CURRENT_TIMESTAMP, InnoDB, utf8, BIGINT for CPs/Gold
+
+### Conquer Online Theming
+- Assets: hero_conquer.png (Twin City, dragons), card_trojan.png, card_warrior.png, card_archer.png, card_taoist.png, card_ninja.png, card_monk.png, avatar_conquer.png, item_dragonball.png
+- Icons: Added Sword, Gem, Gold, Silver, Coin, Dragon, Inventory, Logout, Phone, Block, UserPlus, UserMinus
+- ViewModels: Home shows Twin City, Battle Power, Wealth, Enter Twin City, news about Dragon Gem auction, Patch 7009 Ninja skills, Guild War
+- MainWindow: NAURA logo with dragon, v2.4.0 CO 7009, Eternity server, status Twin City Connected
+
+### Clean Architecture
+```
+Domain/Entities      - Pure business objects (User, Wallet, InventoryItem, etc.)
+Domain/Enums         - CurrencyType, ConquerClass, ItemType, ItemRarity
+Application/Interfaces - IAuthService, IInventoryService, IMarketplaceService, etc.
+Application/Services   - In-memory implementations for demo, ready for MySQL repos
+Infrastructure/      - Security (PasswordHasher PBKDF2), Persistence (MySqlConnectionFactory), Voice
+Services/            - ApiClient (HTTP), VoiceClient (WebSocket)
+ViewModels/          - MVVM with ObservableObject, RelayCommand, async loading
+Views/               - XAML pages with Conquer theming
+```
+
+## Build
 
 ```powershell
 cd NauraLauncher
@@ -30,73 +83,26 @@ dotnet restore
 dotnet run
 ```
 
-Or open `NauraLauncher.sln` in Visual Studio and press **F5**.
+Requires .NET 8 SDK on Windows (WPF is Windows-only).
 
----
+## Tests
 
-## Project structure
-
-```
-NauraLauncher/
-├─ NauraLauncher.sln
-├─ NauraLauncher.csproj          # net8.0-windows, UseWPF
-├─ App.xaml / App.xaml.cs        # merges theme dictionaries
-├─ MainWindow.xaml(.cs)          # the full APEX shell + custom chrome
-│
-├─ Themes/                       # design system (shadcn-inspired)
-│  ├─ Colors.xaml                # design tokens: palette, brushes, radii
-│  ├─ Typography.xaml            # display / body / label text styles
-│  ├─ Icons.xaml                 # Lucide-style icon geometries
-│  └─ Controls.xaml              # the component library (see below)
-│
-├─ Controls/
-│  └─ IconControl.cs             # lightweight stroked/filled icon renderer
-│
-├─ Common/                       # MVVM plumbing + converters
-│  ├─ ObservableObject.cs
-│  ├─ RelayCommand.cs
-│  ├─ Converters.cs              # string→visibility, bool→visibility
-│  ├─ EqualityConverter.cs       # nav selection highlight
-│  └─ IconKeyConverter.cs        # resolve icon by resource key
-│
-├─ Models/                       # GameEntry, SystemStatus, CategoryTab
-├─ ViewModels/                   # MainViewModel, FeatureViewModel
-└─ Assets/                       # generated key art + card thumbnails
+```bash
+python3 -m unittest discover -s tests -v
 ```
 
----
+Checks XAML validity, Conquer assets exist, domain entities exist, MySQL 5.6 schema compatible.
 
-## shadcn/ui components re-created in XAML
+## Server
 
-Defined in `Themes/Controls.xaml`, styled from the tokens in `Themes/Colors.xaml`:
-
-| shadcn component | WPF style key(s) | Where it’s used |
-|------------------|------------------|-----------------|
-| **Button** (default) | `Button.Primary` | Pre‑Order Pass, active category chip |
-| **Button** (secondary) | `Button.Secondary` | muted actions |
-| **Button** (outline) | `Button.Outline` | category filter chips |
-| **Button** (ghost) | `Button.Ghost` | top nav links, Sort, Details |
-| **Button** (icon) | `Button.Icon` | bookmark, filters, window controls |
-| **Card** | `Card` | hero spotlight, archive cards, status tiles |
-| **Badge** / **Badge (accent)** | `Badge`, `Badge.Accent` | ratings, discounts, ribbons, LIVE DROP |
-| **Input** | `Input` + header search field | Search gallery |
-| **Separator** | `Separator.V` | status‑bar dividers |
-| **ScrollBar** | thin custom template | scrollable regions |
-| **Focus ring / radii tokens** | `RadiusSm…Full`, `RingBrush` | global |
-
-Everything is **data‑bound**: nav items, category chips, the curated‑archive grid,
-and the status tiles all render from `MainViewModel`, so real data can be dropped
-in later with no XAML changes.
-
-## Design fidelity notes
-
-- Frameless window with **custom chrome** (drag, minimize, maximize, close).
-- Centered pill navigation with a selected‑state highlight.
-- Hero “Premiere Spotlight” card with layered gradient scrims over key art.
-- Emerald accent (`#34D399`) for LIVE / POSITIVE / discount states, matching the
-  reference.
-- Bottom system status bar (SYSTEM READY, patch progress, comm/audio/cloud).
-- Artwork in `Assets/` is AI‑generated placeholder key art in the design’s mood;
-  swap the files (same names) to use production art.
+```bash
+cd ../NauraLauncher.Server
+dotnet run
 ```
-```
+
+API on 8080, Voice on 8081, in-memory demo (no MySQL needed). For MySQL 5.6, set connection string and UseInMemory=false.
+
+## Docs
+
+- `../docs/ARCHITECTURE.md` - Clean architecture layers, MySQL 5.6 compat, Conquer theming
+- `../docs/PLAN.md` - What is done, prototype, demo, missing, known issues fixed

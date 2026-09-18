@@ -3,31 +3,32 @@ using NauraLauncher.Common;
 namespace NauraLauncher.ViewModels;
 
 /// <summary>
-/// The large "Premiere Spotlight" hero card (PROTOCOL 9: ECLIPSE).
+/// Conquer Online spotlight - featured item in marketplace
 /// </summary>
 public class FeatureViewModel : ObservableObject
 {
-    public string SpotlightLabel => "PREMIERE SPOTLIGHT";
-    public string LiveLabel => "LIVE DROP";
-    public string ItemIndex => "ITEM 01 / 05";
-    public string HeroImage => "Assets/hero_protocol9.png";
+    public string SpotlightLabel => "FEATURED ITEM";
+    public string LiveLabel => "HOT TRADE";
+    public string ItemIndex => "ITEM 01 / 20";
+    public string HeroImage => "Assets/hero_conquer.png";
 
-    public string Studio => "NEXUS ENTERTAINMENT";
-    public string Build => "BUILD 09.4";
-    public string RatingText => "99% POSITIVE (14.2K)";
+    public string Studio => "TWIN CITY MARKET";
+    public string Build => "SUPER 2-SOCKET";
+    public string RatingText => "LEGENDARY · +12 ENHANCED";
 
-    public string Title => "PROTOCOL 9: ECLIPSE";
+    public string Title => "DRAGON BLADE +12 - SUPER 2-SOCKET";
 
     public string Description =>
-        "A high-concept tactical espionage odyssey staged across the layered monolithic sectors of " +
-        "Neo-Brno. Master systemic electronic warfare, augment cranial memory arrays, and unravel a\u2026";
+        "Legendary Trojan blade forged in the depths of Twin City. Super 2-socket with Super Dragon Gem and Super Phoenix Gem. " +
+        "Unbound and ready for trade. The ultimate weapon for 2nd Reborn Trojans seeking dominance in Guild War and PK arena. " +
+        "Certified authentic by Market Conductor.";
 
-    public string EditionPrimary => "Standard";
-    public string EditionSecondary => "Collector's Rig";
+    public string EditionPrimary => "CPs Trade";
+    public string EditionSecondary => "Gold Trade";
 
-    public string OldPrice => "$79.99";
-    public string Price => "$59.99";
-    public string Discount => "-25%";
+    public string OldPrice => "75,000 CPs";
+    public string Price => "52,400 CPs";
+    public string Discount => "-30%";
 
     private bool _isPreOrdered;
     public bool IsPreOrdered
@@ -40,5 +41,5 @@ public class FeatureViewModel : ObservableObject
         }
     }
 
-    public string PreOrderLabel => IsPreOrdered ? "Pass Reserved" : "Pre-Order Pass";
+    public string PreOrderLabel => IsPreOrdered ? "In Watchlist" : "Add to Watchlist";
 }

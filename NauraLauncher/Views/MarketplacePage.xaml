@@ -12,393 +12,456 @@
 
     <Grid>
         <Grid.RowDefinitions>
-            <RowDefinition Height="Auto" />   <!-- toolbar -->
-            <RowDefinition Height="*" />      <!-- hero + curated archives -->
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*"/>
         </Grid.RowDefinitions>
 
-        <!-- ============================================================
-             TOOLBAR : category chips + sort/filter
-             ============================================================ -->
-        <Grid Grid.Row="0" Margin="28,8,28,18">
+        <!-- TOOLBAR -->
+        <Grid Grid.Row="0" Margin="28,8,28,16">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="*"/>
                 <ColumnDefinition Width="Auto"/>
             </Grid.ColumnDefinitions>
 
-            <ItemsControl Grid.Column="0" ItemsSource="{Binding Categories}">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <StackPanel Orientation="Horizontal"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-                <ItemsControl.ItemTemplate>
-                    <DataTemplate>
-                        <Button Content="{Binding Name}" Margin="0,0,10,0" Cursor="Hand"
-                                Command="{Binding DataContext.SelectCategoryCommand,
-                                          RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                CommandParameter="{Binding}">
+            <StackPanel Grid.Column="0" Orientation="Horizontal" VerticalAlignment="Center">
+                <!-- Tabs: Browse / My Listings / Sell -->
+                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="25" Padding="5" Margin="0,0,20,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="BROWSE MARKET" Padding="18,9" Cursor="Hand" Command="{Binding SwitchTabCommand}" CommandParameter="Browse">
                             <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource Button.Outline}">
-                                    <Setter Property="Padding" Value="18,10"/>
-                                    <Setter Property="FontSize" Value="13"/>
+                                <Style TargetType="Button" BasedOn="{StaticResource Button.Ghost}">
                                     <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                            <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
-                                            <Setter Property="Foreground" Value="{DynamicResource PrimaryForegroundBrush}"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
+                                        <DataTrigger Binding="{Binding IsBrowseTab}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource ElevatedBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
                                         </DataTrigger>
                                     </Style.Triggers>
                                 </Style>
                             </Button.Style>
                         </Button>
-                    </DataTemplate>
-                </ItemsControl.ItemTemplate>
-            </ItemsControl>
+                        <Button Content="MY LISTINGS" Padding="18,9" Cursor="Hand" Margin="4,0,0,0" Command="{Binding SwitchTabCommand}" CommandParameter="MyListings">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource Button.Ghost}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMyListingsTab}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource ElevatedBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button Content="SELL ITEM" Padding="18,9" Cursor="Hand" Margin="4,0,0,0" Command="{Binding SwitchTabCommand}" CommandParameter="Sell">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource Button.Ghost}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSellTab}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                            <Setter Property="Foreground" Value="#FF06120C"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                    </StackPanel>
+                </Border>
+
+                <ItemsControl ItemsSource="{Binding Categories}" VerticalAlignment="Center" Visibility="{Binding IsBrowseTab, Converter={StaticResource BoolVis}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Content="{Binding Name}" Margin="0,0,8,0" Cursor="Hand"
+                                    Command="{Binding DataContext.SelectCategoryCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource Button.Outline}">
+                                        <Setter Property="Padding" Value="16,8"/>
+                                        <Setter Property="FontSize" Value="12"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Background" Value="{DynamicResource PrimaryBrush}"/>
+                                                <Setter Property="Foreground" Value="{DynamicResource PrimaryForegroundBrush}"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                            </Button>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
 
             <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                <TextBlock Text="SORT:" Style="{StaticResource Label}" VerticalAlignment="Center"
-                           Foreground="{DynamicResource SubtleForegroundBrush}" Margin="0,0,8,0"/>
-                <Button Style="{StaticResource Button.Ghost}" Padding="0" Cursor="Hand">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <TextBlock Text="{Binding SortLabel}" FontWeight="SemiBold" FontSize="13"
-                                   Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center"/>
-                        <ctrl:IconControl Data="{StaticResource Icon.ChevronDown}"
-                                          Brush="{DynamicResource MutedForegroundBrush}"
-                                          StrokeWidth="1.8" Width="15" Height="15" Margin="6,1,0,0"/>
-                    </StackPanel>
-                </Button>
-                <Button Style="{StaticResource Button.Icon}" Margin="16,0,0,0" ToolTip="Filters">
-                    <ctrl:IconControl Data="{StaticResource Icon.Sliders}"
-                                      Brush="{DynamicResource ForegroundBrush}"
-                                      StrokeWidth="1.8" Width="17" Height="17"/>
+                <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Label}" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,16,0" Visibility="{Binding StatusMessage, Converter={StaticResource StrVis}}"/>
+                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="20" Width="220" Height="38" Margin="0,0,12,0">
+                    <Grid Margin="12,0">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="Auto"/>
+                            <ColumnDefinition Width="*"/>
+                        </Grid.ColumnDefinitions>
+                        <ctrl:IconControl Grid.Column="0" Data="{StaticResource Icon.Search}" Brush="{DynamicResource MutedForegroundBrush}" Width="14" Height="14" Margin="0,0,8,0"/>
+                        <TextBox Grid.Column="1" Text="{Binding SearchQuery, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="12"/>
+                    </Grid>
+                </Border>
+                <Button Style="{StaticResource Button.Primary}" Height="38" Padding="16,0" Command="{Binding SearchCommand}">
+                    <TextBlock Text="SEARCH" FontWeight="Bold" FontSize="11"/>
                 </Button>
             </StackPanel>
         </Grid>
 
-        <!-- ============================================================
-             CONTENT : hero (left) + curated archives (right)
-             ============================================================ -->
+        <!-- CONTENT -->
         <Grid Grid.Row="1" Margin="28,0,28,0">
-            <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="1.15*"/>
-                <ColumnDefinition Width="18"/>
-                <ColumnDefinition Width="1*"/>
-            </Grid.ColumnDefinitions>
+            <!-- BROWSE TAB -->
+            <Grid Visibility="{Binding IsBrowseTab, Converter={StaticResource BoolVis}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="1.1*"/>
+                    <ColumnDefinition Width="18"/>
+                    <ColumnDefinition Width="1*"/>
+                </Grid.ColumnDefinitions>
 
-            <!-- ===== LEFT : hero column ===== -->
-            <Grid Grid.Column="0">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="*"/>
-                    <RowDefinition Height="Auto"/>
-                </Grid.RowDefinitions>
+                <!-- Hero + status -->
+                <Grid Grid.Column="0">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="*"/>
+                        <RowDefinition Height="Auto"/>
+                    </Grid.RowDefinitions>
 
-                <!-- Hero card -->
-                <Border Grid.Row="0" Style="{StaticResource Card}" ClipToBounds="True">
-                    <Grid>
-                        <!-- Background art -->
-                        <Image Source="{Binding Feature.HeroImage}" Stretch="UniformToFill"
-                               HorizontalAlignment="Center" VerticalAlignment="Top"/>
-                        <!-- Gradient scrims -->
-                        <Border>
-                            <Border.Background>
-                                <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                    <GradientStop Color="#00000000" Offset="0.0"/>
-                                    <GradientStop Color="#22000000" Offset="0.45"/>
-                                    <GradientStop Color="#CC07080A" Offset="0.72"/>
-                                    <GradientStop Color="#FF07080A" Offset="1.0"/>
-                                </LinearGradientBrush>
-                            </Border.Background>
-                        </Border>
+                    <Border Grid.Row="0" Style="{StaticResource Card}" ClipToBounds="True">
+                        <Grid>
+                            <Image Source="{Binding Feature.HeroImage}" Stretch="UniformToFill"/>
+                            <Border>
+                                <Border.Background>
+                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                        <GradientStop Color="#00000000" Offset="0.0"/>
+                                        <GradientStop Color="#AA07080A" Offset="0.7"/>
+                                        <GradientStop Color="#FF07080A" Offset="1.0"/>
+                                    </LinearGradientBrush>
+                                </Border.Background>
+                            </Border>
 
-                        <Grid Margin="30">
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="*"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
+                            <Grid Margin="26">
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="Auto"/>
+                                    <RowDefinition Height="*"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
 
-                            <!-- Top labels -->
-                            <StackPanel Grid.Row="0" Orientation="Horizontal">
-                                <TextBlock Text="{Binding Feature.SpotlightLabel}"
-                                           Style="{StaticResource Label}"
-                                           Foreground="{DynamicResource ForegroundBrush}"
-                                           FontWeight="Bold"/>
-                                <StackPanel Orientation="Horizontal" Margin="16,0,0,0">
-                                    <Ellipse Width="6" Height="6" Fill="{DynamicResource AccentBrush}"
-                                             VerticalAlignment="Center" Margin="0,0,6,0"/>
-                                    <TextBlock Text="{Binding Feature.LiveLabel}"
-                                               Style="{StaticResource Label}"
-                                               Foreground="{DynamicResource AccentBrush}"
-                                               FontWeight="Bold"/>
+                                <StackPanel Grid.Row="0" Orientation="Horizontal">
+                                    <Border Style="{StaticResource Badge}" Background="#99000000" Padding="10,5">
+                                        <TextBlock Text="{Binding Feature.SpotlightLabel}" Style="{StaticResource Label}" FontWeight="Bold" Foreground="{DynamicResource ForegroundBrush}"/>
+                                    </Border>
+                                    <StackPanel Orientation="Horizontal" Margin="12,0,0,0" VerticalAlignment="Center">
+                                        <Ellipse Width="6" Height="6" Fill="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                                        <TextBlock Text="{Binding Feature.LiveLabel}" Style="{StaticResource Label}" Foreground="{DynamicResource AccentBrush}" FontWeight="Bold"/>
+                                    </StackPanel>
                                 </StackPanel>
-                            </StackPanel>
 
-                            <!-- Item index chip -->
-                            <Border Grid.Row="1" Style="{StaticResource Badge}"
-                                    HorizontalAlignment="Right" VerticalAlignment="Bottom"
-                                    Background="#99000000" Padding="12,7">
-                                <TextBlock Text="{Binding Feature.ItemIndex}"
-                                           Style="{StaticResource Label}"
-                                           Foreground="{DynamicResource ForegroundBrush}"
-                                           FontFamily="{DynamicResource MonoFont}"/>
-                            </Border>
+                                <Border Grid.Row="1" Style="{StaticResource Badge}" HorizontalAlignment="Right" VerticalAlignment="Bottom" Background="#99000000" Padding="10,6">
+                                    <TextBlock Text="{Binding Feature.ItemIndex}" Style="{StaticResource Label}" Foreground="{DynamicResource ForegroundBrush}" FontFamily="{DynamicResource MonoFont}"/>
+                                </Border>
 
-                            <!-- Bottom info -->
-                            <StackPanel Grid.Row="2" Margin="0,18,0,0">
-                                <Grid Margin="0,0,0,10">
-                                    <StackPanel Orientation="Horizontal">
-                                        <TextBlock Text="{Binding Feature.Studio}"
-                                                   Style="{StaticResource Label}"
-                                                   Foreground="{DynamicResource MutedForegroundBrush}"/>
-                                        <Ellipse Width="4" Height="4" Fill="{DynamicResource SubtleForegroundBrush}"
-                                                 VerticalAlignment="Center" Margin="9,0"/>
-                                        <TextBlock Text="{Binding Feature.Build}"
-                                                   Style="{StaticResource Label}"
-                                                   Foreground="{DynamicResource MutedForegroundBrush}"/>
-                                    </StackPanel>
-                                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                                        <ctrl:IconControl Data="{StaticResource Icon.Star}"
-                                                          Brush="{DynamicResource AccentBrush}" Filled="True"
-                                                          Width="14" Height="14" Margin="0,0,7,0"/>
-                                        <TextBlock Text="{Binding Feature.RatingText}"
-                                                   Style="{StaticResource Label}"
-                                                   Foreground="{DynamicResource AccentBrush}" FontWeight="Bold"/>
-                                    </StackPanel>
-                                </Grid>
-
-                                <TextBlock Text="{Binding Feature.Title}" Style="{StaticResource DisplayTitle}"
-                                           Margin="0,0,0,10"/>
-
-                                <TextBlock Text="{Binding Feature.Description}" Style="{StaticResource Body}"
-                                           MaxWidth="720" HorizontalAlignment="Left" Margin="0,0,0,20"/>
-
-                                <!-- Actions row -->
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-
-                                    <!-- Edition toggle -->
-                                    <Border Grid.Column="0" Background="#66000000"
-                                            BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1"
-                                            CornerRadius="25" Padding="5" VerticalAlignment="Center">
-                                        <StackPanel Orientation="Horizontal">
-                                            <Border Background="{DynamicResource ElevatedBrush}"
-                                                    CornerRadius="20" Padding="16,8">
-                                                <TextBlock Text="{Binding Feature.EditionPrimary}"
-                                                           FontWeight="SemiBold" FontSize="13"
-                                                           Foreground="{DynamicResource ForegroundBrush}"/>
-                                            </Border>
-                                            <TextBlock Text="{Binding Feature.EditionSecondary}"
-                                                       FontWeight="Medium" FontSize="13" Margin="16,0,14,0"
-                                                       VerticalAlignment="Center"
-                                                       Foreground="{DynamicResource MutedForegroundBrush}"/>
+                                <StackPanel Grid.Row="2" Margin="0,16,0,0">
+                                    <StackPanel Orientation="Horizontal" Margin="0,0,0,8">
+                                        <TextBlock Text="{Binding Feature.Studio}" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}"/>
+                                        <Ellipse Width="4" Height="4" Fill="{DynamicResource SubtleForegroundBrush}" VerticalAlignment="Center" Margin="8,0"/>
+                                        <TextBlock Text="{Binding Feature.Build}" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}"/>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Margin="20,0,0,0">
+                                            <ctrl:IconControl Data="{StaticResource Icon.Gem}" Brush="{DynamicResource AccentBrush}" Width="14" Height="14" Margin="0,0,6,0"/>
+                                            <TextBlock Text="{Binding Feature.RatingText}" Style="{StaticResource Label}" Foreground="{DynamicResource AccentBrush}" FontWeight="Bold"/>
                                         </StackPanel>
-                                    </Border>
-
-                                    <!-- Price + buttons -->
-                                    <StackPanel Grid.Column="2" Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Feature.OldPrice}" FontSize="14"
-                                                   Foreground="{DynamicResource SubtleForegroundBrush}"
-                                                   VerticalAlignment="Center" Margin="0,0,10,0">
-                                            <TextBlock.TextDecorations>
-                                                <TextDecorationCollection>
-                                                    <TextDecoration Location="Strikethrough"/>
-                                                </TextDecorationCollection>
-                                            </TextBlock.TextDecorations>
-                                        </TextBlock>
-                                        <TextBlock Text="{Binding Feature.Price}" FontSize="26" FontWeight="Bold"
-                                                   FontFamily="{DynamicResource DisplayFont}"
-                                                   Foreground="{DynamicResource ForegroundBrush}"
-                                                   VerticalAlignment="Center"/>
-                                        <Border Style="{StaticResource Badge.Accent}" Margin="10,0,0,0" Padding="8,4">
-                                            <TextBlock Text="{Binding Feature.Discount}" FontWeight="Bold" FontSize="12"
-                                                       Foreground="{DynamicResource AccentBrush}"/>
-                                        </Border>
-
-                                        <Button Style="{StaticResource Button.Icon}" Width="46" Height="46"
-                                                Margin="18,0,10,0" ToolTip="Bookmark">
-                                            <ctrl:IconControl Data="{StaticResource Icon.Bookmark}"
-                                                              Brush="{DynamicResource ForegroundBrush}"
-                                                              StrokeWidth="1.7" Width="18" Height="18"/>
-                                        </Button>
-
-                                        <Button Style="{StaticResource Button.Primary}" Height="46" Padding="24,0"
-                                                Command="{Binding PreOrderCommand}">
-                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                <ctrl:IconControl Data="{StaticResource Icon.Bookmark}"
-                                                                  Brush="{DynamicResource PrimaryForegroundBrush}"
-                                                                  StrokeWidth="1.7" Width="16" Height="16" Margin="0,0,9,0"/>
-                                                <TextBlock Text="{Binding Feature.PreOrderLabel}"
-                                                           FontWeight="SemiBold" FontSize="14"
-                                                           VerticalAlignment="Center"/>
-                                            </StackPanel>
-                                        </Button>
                                     </StackPanel>
-                                </Grid>
-                            </StackPanel>
+                                    <TextBlock Text="{Binding Feature.Title}" Style="{StaticResource DisplayTitle}" FontSize="24" Margin="0,0,0,8"/>
+                                    <TextBlock Text="{Binding Feature.Description}" Style="{StaticResource Body}" FontSize="13" MaxWidth="600" HorizontalAlignment="Left" TextWrapping="Wrap" Margin="0,0,0,16" Foreground="{DynamicResource MutedForegroundBrush}"/>
+
+                                    <Grid>
+                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Feature.OldPrice}" FontSize="13" Foreground="{DynamicResource SubtleForegroundBrush}" VerticalAlignment="Center" Margin="0,0,10,0">
+                                                <TextBlock.TextDecorations><TextDecorationCollection><TextDecoration Location="Strikethrough"/></TextDecorationCollection></TextBlock.TextDecorations>
+                                            </TextBlock>
+                                            <TextBlock Text="{Binding Feature.Price}" FontSize="22" FontWeight="Bold" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center"/>
+                                            <Border Style="{StaticResource Badge.Accent}" Margin="10,0,0,0" Padding="8,4">
+                                                <TextBlock Text="{Binding Feature.Discount}" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource AccentBrush}"/>
+                                            </Border>
+                                        </StackPanel>
+                                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" VerticalAlignment="Center">
+                                            <Button Style="{StaticResource Button.Icon}" Width="42" Height="42" Margin="0,0,8,0">
+                                                <ctrl:IconControl Data="{StaticResource Icon.Bookmark}" Brush="{DynamicResource ForegroundBrush}" Width="18" Height="18"/>
+                                            </Button>
+                                            <Button Style="{StaticResource Button.Primary}" Height="42" Padding="20,0" Command="{Binding PreOrderCommand}">
+                                                <TextBlock Text="{Binding Feature.PreOrderLabel}" FontWeight="Bold" FontSize="13"/>
+                                            </Button>
+                                        </StackPanel>
+                                    </Grid>
+                                </StackPanel>
+                            </Grid>
                         </Grid>
-                    </Grid>
-                </Border>
+                    </Border>
 
-                <!-- Status tiles -->
-                <ItemsControl Grid.Row="1" ItemsSource="{Binding StatusTiles}" Margin="0,18,0,0">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Rows="1"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Style="{StaticResource Card}" Margin="0,0,14,0" Padding="18,16">
-                                <Grid>
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition Width="Auto"/>
-                                        <ColumnDefinition Width="*"/>
-                                        <ColumnDefinition Width="Auto"/>
-                                    </Grid.ColumnDefinitions>
-                                    <Border Grid.Column="0" Width="40" Height="40" CornerRadius="10"
-                                            Background="{DynamicResource MutedBrush}" Margin="0,0,14,0">
-                                        <ctrl:IconControl Data="{Binding IconKey, Converter={x:Static cmn:IconKeyConverter.Instance}}"
-                                                          Brush="{DynamicResource ForegroundBrush}"
-                                                          StrokeWidth="1.7" Width="20" Height="20"/>
-                                    </Border>
-                                    <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Category}" Style="{StaticResource Label}"
-                                                   Foreground="{DynamicResource SubtleForegroundBrush}"/>
-                                        <TextBlock Text="{Binding Detail}" FontWeight="SemiBold" FontSize="14"
-                                                   Foreground="{DynamicResource ForegroundBrush}" Margin="0,3,0,0"/>
-                                    </StackPanel>
-                                    <TextBlock Grid.Column="2" Text="{Binding State}" Style="{StaticResource Label}"
-                                               VerticalAlignment="Center"
-                                               Foreground="{DynamicResource AccentBrush}" FontWeight="Bold"/>
-                                </Grid>
-                            </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
-            </Grid>
-
-            <!-- ===== RIGHT : curated archives ===== -->
-            <Grid Grid.Column="2">
-                <Grid.RowDefinitions>
-                    <RowDefinition Height="Auto"/>
-                    <RowDefinition Height="*"/>
-                </Grid.RowDefinitions>
-
-                <Grid Grid.Row="0" Margin="0,2,0,16">
-                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                        <Ellipse Width="8" Height="8" Fill="{DynamicResource AccentBrush}"
-                                 VerticalAlignment="Center" Margin="0,0,10,0"/>
-                        <TextBlock Text="Curated Archives" Style="{StaticResource SectionTitle}"/>
-                    </StackPanel>
-                    <TextBlock Text="{Binding ArchivesShowing}" Style="{StaticResource Label}"
-                               HorizontalAlignment="Right" VerticalAlignment="Center"
-                               Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                    <ItemsControl Grid.Row="1" ItemsSource="{Binding StatusTiles}" Margin="0,14,0,0">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><UniformGrid Rows="1"/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Card}" Margin="0,0,10,0" Padding="14,12">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="Auto"/>
+                                            <ColumnDefinition Width="*"/>
+                                            <ColumnDefinition Width="Auto"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Width="36" Height="36" CornerRadius="8" Background="{DynamicResource MutedBrush}" Margin="0,0,10,0">
+                                            <ctrl:IconControl Data="{Binding IconKey, Converter={x:Static cmn:IconKeyConverter.Instance}}" Brush="{DynamicResource ForegroundBrush}" Width="18" Height="18"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Category}" Style="{StaticResource Label}" FontSize="10"/>
+                                            <TextBlock Text="{Binding Detail}" FontWeight="SemiBold" FontSize="12" Foreground="{DynamicResource ForegroundBrush}" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                        <TextBlock Grid.Column="2" Text="{Binding State}" Style="{StaticResource Label}" Foreground="{DynamicResource AccentBrush}" FontWeight="Bold" VerticalAlignment="Center" FontSize="10"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
                 </Grid>
 
-                <ItemsControl Grid.Row="1" ItemsSource="{Binding Archives}">
-                    <ItemsControl.ItemsPanel>
-                        <ItemsPanelTemplate>
-                            <UniformGrid Columns="2"/>
-                        </ItemsPanelTemplate>
-                    </ItemsControl.ItemsPanel>
-                    <ItemsControl.ItemTemplate>
-                        <DataTemplate>
-                            <Border Style="{StaticResource Card}" Margin="0,0,14,14" Padding="12">
-                                <Grid>
-                                    <Grid.RowDefinitions>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                        <RowDefinition Height="Auto"/>
-                                    </Grid.RowDefinitions>
+                <!-- Marketplace Listings -->
+                <Grid Grid.Column="2">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="Auto"/>
+                        <RowDefinition Height="*"/>
+                    </Grid.RowDefinitions>
 
-                                    <!-- Thumbnail -->
-                                    <Border Grid.Row="0" CornerRadius="10" ClipToBounds="True" Height="150">
+                    <Grid Grid.Row="0" Margin="0,2,0,12">
+                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
+                            <Ellipse Width="8" Height="8" Fill="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,10,0"/>
+                            <TextBlock Text="TWIN CITY MARKET" Style="{StaticResource SectionTitle}" FontSize="16"/>
+                        </StackPanel>
+                        <TextBlock Text="{Binding ArchivesShowing}" Style="{StaticResource Label}" HorizontalAlignment="Right" VerticalAlignment="Center" Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                    </Grid>
+
+                    <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                        <ItemsControl ItemsSource="{Binding MarketplaceItems}">
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Style="{StaticResource Card}" Margin="0,0,0,12" Padding="14">
                                         <Grid>
-                                            <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
-                                            <Border>
-                                                <Border.Background>
-                                                    <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                        <GradientStop Color="#66000000" Offset="0"/>
-                                                        <GradientStop Color="#00000000" Offset="0.4"/>
-                                                    </LinearGradientBrush>
-                                                </Border.Background>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="70"/>
+                                                <ColumnDefinition Width="*"/>
+                                                <ColumnDefinition Width="Auto"/>
+                                            </Grid.ColumnDefinitions>
+
+                                            <Border Grid.Column="0" Width="70" Height="70" CornerRadius="10" ClipToBounds="True">
+                                                <Image Source="{Binding Item.ImagePath}" Stretch="UniformToFill"/>
                                             </Border>
-                                            <!-- Ribbon -->
-                                            <Border Style="{StaticResource Badge}" Margin="10"
-                                                    HorizontalAlignment="Left" VerticalAlignment="Top"
-                                                    Background="#B3000000" Padding="9,5">
-                                                <TextBlock Text="{Binding Ribbon}"
-                                                           FontWeight="Bold" FontSize="10">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Label}">
-                                                            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding RibbonIsAccent}" Value="True">
-                                                                    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                            </Border>
-                                            <!-- Bookmark -->
-                                            <Button Style="{StaticResource Button.Icon}" Width="30" Height="30"
-                                                    Margin="10" HorizontalAlignment="Right" VerticalAlignment="Top"
-                                                    Background="#B3000000" ToolTip="Save">
-                                                <ctrl:IconControl Data="{StaticResource Icon.Bookmark}"
-                                                                  Brush="{DynamicResource ForegroundBrush}"
-                                                                  StrokeWidth="1.7" Width="14" Height="14"/>
-                                            </Button>
+
+                                            <StackPanel Grid.Column="1" Margin="14,0,0,0" VerticalAlignment="Center">
+                                                <StackPanel Orientation="Horizontal">
+                                                    <TextBlock Text="{Binding Item.Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}" TextTrimming="CharacterEllipsis" MaxWidth="180"/>
+                                                    <Border Style="{StaticResource Badge}" Margin="8,0,0,0" Padding="6,2" Background="#2634D399" Visibility="{Binding Item.Plus, Converter={StaticResource BoolVis}}">
+                                                        <TextBlock Text="{Binding Item.Plus, StringFormat='+{0}'}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
+                                                    </Border>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                    <TextBlock Text="{Binding Item.Rarity}" FontSize="11" Foreground="{Binding Item.GetRarityHex, Converter={StaticResource HexBrush}}" FontWeight="Bold"/>
+                                                    <TextBlock Text="•" Margin="6,0" Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                                                    <TextBlock Text="{Binding Item.Type}" Style="{StaticResource Label}" FontSize="10"/>
+                                                    <TextBlock Text="•" Margin="6,0" Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                                                    <TextBlock Text="{Binding SellerName}" Style="{StaticResource Label}" FontSize="10" Foreground="{DynamicResource MutedForegroundBrush}"/>
+                                                </StackPanel>
+                                                <StackPanel Orientation="Horizontal" Margin="0,6,0,0">
+                                                    <ctrl:IconControl Data="{StaticResource Icon.Gem}" Brush="{DynamicResource AccentBrush}" Width="12" Height="12" Margin="0,0,4,0" Visibility="{Binding Currency, Converter={StaticResource ParamMatchVis}, ConverterParameter=Cps}"/>
+                                                    <ctrl:IconControl Data="{StaticResource Icon.Gold}" Brush="#FFF5A524" Width="12" Height="12" Margin="0,0,4,0" Visibility="{Binding Currency, Converter={StaticResource ParamMatchVis}, ConverterParameter=Gold}"/>
+                                                    <TextBlock Text="{Binding Price}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}"/>
+                                                    <TextBlock Text="{Binding Currency}" Margin="4,0,0,0" Style="{StaticResource Label}" FontSize="11" Foreground="{DynamicResource AccentBrush}"/>
+                                                </StackPanel>
+                                            </StackPanel>
+
+                                            <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                <Button Style="{StaticResource Button.Accent}" Height="36" Padding="16,0" Command="{Binding DataContext.BuyCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                                    <TextBlock Text="BUY" FontWeight="Bold" FontSize="12"/>
+                                                </Button>
+                                            </StackPanel>
                                         </Grid>
                                     </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
 
-                                    <!-- Studio + release -->
-                                    <Grid Grid.Row="1" Margin="4,14,4,0">
-                                        <TextBlock Text="{Binding Studio}" Style="{StaticResource Label}"
-                                                   Foreground="{DynamicResource SubtleForegroundBrush}"/>
-                                        <TextBlock Text="{Binding ReleaseTag}" Style="{StaticResource Label}"
-                                                   HorizontalAlignment="Right"
-                                                   Foreground="{DynamicResource SubtleForegroundBrush}"/>
-                                    </Grid>
+            <!-- MY LISTINGS TAB -->
+            <Grid Visibility="{Binding IsMyListingsTab, Converter={StaticResource BoolVis}}">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="*"/>
+                </Grid.RowDefinitions>
 
-                                    <!-- Title -->
-                                    <TextBlock Grid.Row="2" Text="{Binding Title}" Style="{StaticResource CardTitle}"
-                                               Margin="4,6,4,0"/>
+                <StackPanel Grid.Row="0" Orientation="Horizontal" Margin="0,0,0,16">
+                    <ctrl:IconControl Data="{StaticResource Icon.Gold}" Brush="#FFF5A524" Width="20" Height="20" Margin="0,0,10,0"/>
+                    <TextBlock Text="MY MARKETPLACE LISTINGS" Style="{StaticResource SectionTitle}"/>
+                    <TextBlock Text="{Binding MyListings.Count, StringFormat='({0} ACTIVE)'}" Style="{StaticResource Label}" Margin="12,0,0,0" VerticalAlignment="Center"/>
+                </StackPanel>
 
-                                    <!-- Price + details -->
-                                    <Grid Grid.Row="3" Margin="4,18,4,4">
-                                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                            <TextBlock Text="{Binding Price}" FontWeight="Bold" FontSize="15"
-                                                       FontFamily="{DynamicResource MonoFont}"
-                                                       Foreground="{DynamicResource ForegroundBrush}"/>
-                                            <Border Style="{StaticResource Badge.Accent}" Margin="8,0,0,0" Padding="6,3"
-                                                    Visibility="{Binding Discount, Converter={StaticResource StrVis}}">
-                                                <TextBlock Text="{Binding Discount}" FontWeight="Bold" FontSize="11"
-                                                           Foreground="{DynamicResource AccentBrush}"/>
+                <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                    <ItemsControl ItemsSource="{Binding MyListings}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Card}" Width="320" Margin="0,0,16,16" Padding="16">
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+
+                                        <Grid Grid.Row="0">
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="60"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Width="60" Height="60" CornerRadius="8" ClipToBounds="True">
+                                                <Image Source="{Binding Item.ImagePath}" Stretch="UniformToFill"/>
                                             </Border>
-                                        </StackPanel>
-                                        <Button HorizontalAlignment="Right" Style="{StaticResource Button.Ghost}"
-                                                Padding="0" Cursor="Hand">
-                                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                                <TextBlock Text="DETAILS" Style="{StaticResource Label}"
-                                                           Foreground="{DynamicResource MutedForegroundBrush}"
-                                                           FontWeight="Bold" VerticalAlignment="Center"/>
-                                                <ctrl:IconControl Data="{StaticResource Icon.ArrowRight}"
-                                                                  Brush="{DynamicResource MutedForegroundBrush}"
-                                                                  StrokeWidth="1.8" Width="14" Height="14" Margin="7,0,0,0"/>
+                                            <StackPanel Grid.Column="1" Margin="12,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Item.Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}" TextWrapping="Wrap"/>
+                                                <TextBlock Text="{Binding Item.Rarity}" FontSize="11" Foreground="{Binding Item.GetRarityHex, Converter={StaticResource HexBrush}}" Margin="0,4,0,0"/>
                                             </StackPanel>
+                                        </Grid>
+
+                                        <Grid Grid.Row="1" Margin="0,16,0,0">
+                                            <StackPanel>
+                                                <TextBlock Text="LISTING PRICE" Style="{StaticResource Label}" FontSize="10"/>
+                                                <StackPanel Orientation="Horizontal" Margin="0,4,0,0">
+                                                    <TextBlock Text="{Binding Price}" FontWeight="Bold" FontSize="18" Foreground="{DynamicResource ForegroundBrush}"/>
+                                                    <TextBlock Text="{Binding Currency}" Margin="6,0,0,0" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center"/>
+                                                </StackPanel>
+                                            </StackPanel>
+                                            <Border Style="{StaticResource Badge.Accent}" HorizontalAlignment="Right" VerticalAlignment="Top" Padding="8,4">
+                                                <TextBlock Text="{Binding Status}" FontSize="10" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
+                                            </Border>
+                                        </Grid>
+
+                                        <Button Grid.Row="2" Style="{StaticResource Button.Outline}" Height="40" Margin="0,16,0,0" Command="{Binding DataContext.CancelListingCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                            <TextBlock Text="CANCEL LISTING" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource DestructiveBrush}"/>
                                         </Button>
                                     </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </ScrollViewer>
+            </Grid>
+
+            <!-- SELL TAB -->
+            <Grid Visibility="{Binding IsSellTab, Converter={StaticResource BoolVis}}">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="20"/>
+                    <ColumnDefinition Width="380"/>
+                </Grid.ColumnDefinitions>
+
+                <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                    <StackPanel>
+                        <TextBlock Text="SELECT ITEM FROM INVENTORY TO SELL" Style="{StaticResource PanelTitle}" Margin="0,0,0,16"/>
+                        <ItemsControl ItemsSource="{Binding TradableInventory}">
+                            <ItemsControl.ItemsPanel>
+                                <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                            </ItemsControl.ItemsPanel>
+                            <ItemsControl.ItemTemplate>
+                                <DataTemplate>
+                                    <Border Width="180" Margin="0,0,12,12" Padding="10" Cursor="Hand">
+                                        <Border.Style>
+                                            <Style TargetType="Border" BasedOn="{StaticResource Card}">
+                                                <Style.Triggers>
+                                                    <DataTrigger Value="True">
+                                                        <DataTrigger.Binding>
+                                                            <MultiBinding Converter="{x:Static cmn:EqualityConverter.Instance}">
+                                                                <Binding/>
+                                                                <Binding Path="DataContext.SelectedInventoryItem" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                            </MultiBinding>
+                                                        </DataTrigger.Binding>
+                                                        <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                        <Setter Property="BorderThickness" Value="2"/>
+                                                    </DataTrigger>
+                                                </Style.Triggers>
+                                            </Style>
+                                        </Border.Style>
+                                        <Grid>
+                                            <Grid.RowDefinitions>
+                                                <RowDefinition Height="Auto"/>
+                                                <RowDefinition Height="Auto"/>
+                                            </Grid.RowDefinitions>
+                                            <Border Grid.Row="0" Height="80" CornerRadius="8" ClipToBounds="True">
+                                                <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
+                                            </Border>
+                                            <StackPanel Grid.Row="1" Margin="0,8,0,0">
+                                                <TextBlock Text="{Binding Name}" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource ForegroundBrush}" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding Rarity}" FontSize="10" Foreground="{Binding GetRarityHex, Converter={StaticResource HexBrush}}" Margin="0,2,0,0"/>
+                                            </StackPanel>
+                                            <Button Grid.Row="0" Grid.RowSpan="2" Opacity="0" Command="{Binding DataContext.SelectInventoryItemCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                        </Grid>
+                                    </Border>
+                                </DataTemplate>
+                            </ItemsControl.ItemTemplate>
+                        </ItemsControl>
+                    </StackPanel>
+                </ScrollViewer>
+
+                <Border Grid.Column="2" Style="{StaticResource Card}" Padding="20" VerticalAlignment="Top">
+                    <StackPanel>
+                        <TextBlock Text="CREATE LISTING" Style="{StaticResource PanelTitle}" Margin="0,0,0,16"/>
+
+                        <StackPanel Visibility="{Binding SelectedInventoryItem, Converter={StaticResource BoolVis}}">
+                            <Border Height="120" CornerRadius="10" ClipToBounds="True" Margin="0,0,0,16">
+                                <Image Source="{Binding SelectedInventoryItem.ImagePath}" Stretch="UniformToFill"/>
+                            </Border>
+                            <TextBlock Text="{Binding SelectedInventoryItem.Name}" FontWeight="Bold" FontSize="14" Foreground="{DynamicResource ForegroundBrush}" Margin="0,0,0,4"/>
+                            <TextBlock Text="{Binding SelectedInventoryItem.Description}" Style="{StaticResource Body}" FontSize="11" Foreground="{DynamicResource MutedForegroundBrush}" TextWrapping="Wrap" Margin="0,0,0,16"/>
+
+                            <TextBlock Text="PRICE" Style="{StaticResource Label}" FontWeight="Bold" Margin="0,0,0,8"/>
+                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Height="44" Margin="0,0,0,12">
+                                <Grid Margin="12,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="*"/>
+                                        <ColumnDefinition Width="Auto"/>
+                                    </Grid.ColumnDefinitions>
+                                    <TextBox Grid.Column="0" Text="{Binding ListingPrice, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="14" FontFamily="{DynamicResource MonoFont}"/>
+                                    <TextBlock Grid.Column="1" Text="{Binding ListingCurrency}" Style="{StaticResource Label}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="12,0,0,0"/>
                                 </Grid>
                             </Border>
-                        </DataTemplate>
-                    </ItemsControl.ItemTemplate>
-                </ItemsControl>
+
+                            <TextBlock Text="CURRENCY" Style="{StaticResource Label}" FontWeight="Bold" Margin="0,0,0,8"/>
+                            <Border Style="{StaticResource Segmented.Container}" Margin="0,0,0,20">
+                                <StackPanel Orientation="Horizontal">
+                                    <RadioButton Style="{StaticResource Segmented.Item}" Content="CPs" IsChecked="{Binding ListingCurrency, Converter={StaticResource ParamMatch}, ConverterParameter=Cps}"/>
+                                    <RadioButton Style="{StaticResource Segmented.Item}" Content="Gold" IsChecked="{Binding ListingCurrency, Converter={StaticResource ParamMatch}, ConverterParameter=Gold}"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Button Style="{StaticResource Button.Accent}" Height="46" Command="{Binding CreateListingCommand}">
+                                <TextBlock Text="LIST ITEM FOR SALE" FontWeight="Bold" FontSize="13"/>
+                            </Button>
+                        </StackPanel>
+
+                        <StackPanel Visibility="{Binding SelectedInventoryItem, Converter={StaticResource BoolVis}, ConverterParameter=invert}">
+                            <TextBlock Text="Select an item from your inventory to list it in Twin City Market. Only unbound, tradable items can be sold." Style="{StaticResource Label}" Foreground="{DynamicResource SubtleForegroundBrush}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,40,0,0"/>
+                        </StackPanel>
+                    </StackPanel>
+                </Border>
             </Grid>
         </Grid>
     </Grid>

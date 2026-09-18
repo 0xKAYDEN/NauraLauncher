@@ -10,729 +10,598 @@
              d:DesignHeight="880" d:DesignWidth="1504"
              d:DataContext="{d:DesignInstance Type=vm:AuctionViewModel}">
 
-    <ScrollViewer VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
-        <StackPanel Margin="28,6,28,24">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto"/>
+            <RowDefinition Height="*"/>
+        </Grid.RowDefinitions>
 
-            <!-- ============================================================
-                 RARITY FILTER CHIPS + LIVE STATE
-                 ============================================================ -->
-            <Grid Margin="0,4,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="*"/>
-                    <ColumnDefinition Width="Auto"/>
-                </Grid.ColumnDefinitions>
+        <!-- Toolbar with tabs -->
+        <Grid Grid.Row="0" Margin="28,8,28,16">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="Auto"/>
+            </Grid.ColumnDefinitions>
 
-                <StackPanel Grid.Column="0" Orientation="Horizontal">
-                    <StackPanel VerticalAlignment="Center" Margin="0,0,18,0">
-                        <TextBlock Text="AUCTION FLOOR" Style="{StaticResource Label}"
-                                   Foreground="{DynamicResource SubtleForegroundBrush}"/>
-                        <TextBlock Text="{Binding SelectedRarityName}" Style="{StaticResource CardHeader}"
-                                   Margin="0,3,0,0"/>
+            <StackPanel Grid.Column="0" Orientation="Horizontal">
+                <!-- Tabs -->
+                <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="25" Padding="5" Margin="0,0,16,0">
+                    <StackPanel Orientation="Horizontal">
+                        <Button Content="BROWSE AUCTIONS" Padding="16,8" Cursor="Hand" Command="{Binding SwitchTabCommand}" CommandParameter="Browse">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource Button.Ghost}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsBrowseTab}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource ElevatedBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button Content="MY LOTS" Padding="16,8" Cursor="Hand" Margin="4,0,0,0" Command="{Binding SwitchTabCommand}" CommandParameter="MyLots">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource Button.Ghost}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsMyLotsTab}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource ElevatedBrush}"/>
+                                            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
+                        <Button Content="SELL" Padding="16,8" Cursor="Hand" Margin="4,0,0,0" Command="{Binding SwitchTabCommand}" CommandParameter="Sell">
+                            <Button.Style>
+                                <Style TargetType="Button" BasedOn="{StaticResource Button.Ghost}">
+                                    <Style.Triggers>
+                                        <DataTrigger Binding="{Binding IsSellTab}" Value="True">
+                                            <Setter Property="Background" Value="{DynamicResource AccentBrush}"/>
+                                            <Setter Property="Foreground" Value="#FF06120C"/>
+                                            <Setter Property="FontWeight" Value="Bold"/>
+                                        </DataTrigger>
+                                    </Style.Triggers>
+                                </Style>
+                            </Button.Style>
+                        </Button>
                     </StackPanel>
-
-                    <ItemsControl ItemsSource="{Binding RarityFilters}" VerticalAlignment="Center">
-                        <ItemsControl.ItemsPanel>
-                            <ItemsPanelTemplate>
-                                <StackPanel Orientation="Horizontal"/>
-                            </ItemsPanelTemplate>
-                        </ItemsControl.ItemsPanel>
-                        <ItemsControl.ItemTemplate>
-                            <DataTemplate>
-                                <Button Margin="0,0,9,0" Cursor="Hand"
-                                        Command="{Binding DataContext.SelectRarityCommand,
-                                                  RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                        CommandParameter="{Binding}">
-                                    <Button.Style>
-                                        <Style TargetType="Button" BasedOn="{StaticResource Button.Outline}">
-                                            <Setter Property="Padding" Value="16,10"/>
-                                            <Setter Property="FontSize" Value="12"/>
-                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                            <Style.Triggers>
-                                                <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                    <Setter Property="Background"
-                                                            Value="{Binding ToneHex, Converter={StaticResource HexBrush}}"/>
-                                                    <Setter Property="Foreground" Value="#FF0A0B0D"/>
-                                                    <Setter Property="FontWeight" Value="Bold"/>
-                                                </DataTrigger>
-                                            </Style.Triggers>
-                                        </Style>
-                                    </Button.Style>
-                                    <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                        <TextBlock Text="{Binding Name}" VerticalAlignment="Center"/>
-                                        <TextBlock Text="{Binding Count}" Margin="8,0,0,0" FontSize="11"
-                                                   FontFamily="{DynamicResource MonoFont}" Opacity="0.7"
-                                                   VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Button>
-                            </DataTemplate>
-                        </ItemsControl.ItemTemplate>
-                    </ItemsControl>
-                </StackPanel>
-
-                <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
-                    <Border Style="{StaticResource Badge.Accent}" Padding="12,8">
-                        <StackPanel Orientation="Horizontal">
-                            <Ellipse Width="6" Height="6" Fill="{DynamicResource AccentBrush}"
-                                     VerticalAlignment="Center" Margin="0,0,8,0"/>
-                            <TextBlock Text="MARKET OPEN · 148 LOTS" Style="{StaticResource Label}"
-                                       FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
-                        </StackPanel>
-                    </Border>
-                    <Button Style="{StaticResource Button.Icon}" Width="38" Height="38" Margin="10,0,0,0"
-                            ToolTip="Refresh floor">
-                        <ctrl:IconControl Data="{StaticResource Icon.Refresh}"
-                                          Brush="{DynamicResource ForegroundBrush}"
-                                          StrokeWidth="1.8" Width="16" Height="16"/>
-                    </Button>
-                </StackPanel>
-            </Grid>
-
-            <!-- ============================================================
-                 ESCROW POOL / WATCHLIST / LOTS WON
-                 ============================================================ -->
-            <ItemsControl Margin="0,20,0,0">
-                <ItemsControl.ItemsPanel>
-                    <ItemsPanelTemplate>
-                        <UniformGrid Columns="3"/>
-                    </ItemsPanelTemplate>
-                </ItemsControl.ItemsPanel>
-
-                <!-- Escrow pool -->
-                <Border Style="{StaticResource Card}" Margin="0,0,14,0" Padding="20,18">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Width="44" Height="44" CornerRadius="12"
-                                Background="#2634D399" Margin="0,0,14,0" VerticalAlignment="Center">
-                            <ctrl:IconControl Data="{StaticResource Icon.Wallet}"
-                                              Brush="{DynamicResource AccentBrush}"
-                                              StrokeWidth="1.7" Width="21" Height="21"/>
-                        </Border>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding EscrowPoolLabel}" Style="{StaticResource Label}"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,4,0,3">
-                                <TextBlock Text="{Binding EscrowPoolValue}" FontSize="23" FontWeight="Bold"
-                                           FontFamily="{DynamicResource MonoFont}"
-                                           Foreground="{DynamicResource ForegroundBrush}"/>
-                                <TextBlock Text="{Binding EscrowPoolDelta}" Style="{StaticResource Label}"
-                                           Foreground="{DynamicResource AccentBrush}" FontWeight="Bold"
-                                           VerticalAlignment="Center" Margin="10,0,0,0"/>
-                            </StackPanel>
-                            <TextBlock Text="{Binding EscrowPoolMeta}" Style="{StaticResource Label}"
-                                       Foreground="{DynamicResource SubtleForegroundBrush}"/>
-                        </StackPanel>
-                    </Grid>
                 </Border>
 
-                <!-- Watchlist -->
-                <Border Style="{StaticResource Card}" Margin="0,0,14,0" Padding="20,18">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Width="44" Height="44" CornerRadius="12"
-                                Background="{DynamicResource MutedBrush}" Margin="0,0,14,0" VerticalAlignment="Center">
-                            <ctrl:IconControl Data="{StaticResource Icon.Eye}"
-                                              Brush="{DynamicResource ForegroundBrush}"
-                                              StrokeWidth="1.7" Width="21" Height="21"/>
-                        </Border>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding WatchlistLabel}" Style="{StaticResource Label}"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,4,0,3">
-                                <TextBlock Text="{Binding WatchlistValue}" FontSize="23" FontWeight="Bold"
-                                           FontFamily="{DynamicResource MonoFont}"
-                                           Foreground="{DynamicResource ForegroundBrush}"/>
-                                <TextBlock Text="{Binding WatchlistDelta}" Style="{StaticResource Label}"
-                                           Foreground="{DynamicResource MutedForegroundBrush}"
-                                           VerticalAlignment="Center" Margin="10,0,0,0"/>
-                            </StackPanel>
-                            <TextBlock Text="{Binding WatchlistMeta}" Style="{StaticResource Label}"
-                                       Foreground="{DynamicResource SubtleForegroundBrush}"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-
-                <!-- Lots won -->
-                <Border Style="{StaticResource Card}" Padding="20,18">
-                    <Grid>
-                        <Grid.ColumnDefinitions>
-                            <ColumnDefinition Width="Auto"/>
-                            <ColumnDefinition Width="*"/>
-                        </Grid.ColumnDefinitions>
-                        <Border Grid.Column="0" Width="44" Height="44" CornerRadius="12"
-                                Background="{DynamicResource MutedBrush}" Margin="0,0,14,0" VerticalAlignment="Center">
-                            <ctrl:IconControl Data="{StaticResource Icon.Trophy}"
-                                              Brush="{DynamicResource ForegroundBrush}"
-                                              StrokeWidth="1.7" Width="21" Height="21"/>
-                        </Border>
-                        <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                            <TextBlock Text="{Binding LotsWonLabel}" Style="{StaticResource Label}"/>
-                            <StackPanel Orientation="Horizontal" Margin="0,4,0,3">
-                                <TextBlock Text="{Binding LotsWonValue}" FontSize="23" FontWeight="Bold"
-                                           FontFamily="{DynamicResource MonoFont}"
-                                           Foreground="{DynamicResource ForegroundBrush}"/>
-                                <TextBlock Text="{Binding LotsWonDelta}" Style="{StaticResource Label}"
-                                           Foreground="{DynamicResource AccentBrush}" FontWeight="Bold"
-                                           VerticalAlignment="Center" Margin="10,0,0,0"/>
-                            </StackPanel>
-                            <TextBlock Text="{Binding LotsWonMeta}" Style="{StaticResource Label}"
-                                       Foreground="{DynamicResource SubtleForegroundBrush}"/>
-                        </StackPanel>
-                    </Grid>
-                </Border>
-            </ItemsControl>
-
-            <!-- ============================================================
-                 LIVE LOT  +  BID PANEL
-                 ============================================================ -->
-            <Grid Margin="0,20,0,0">
-                <Grid.ColumnDefinitions>
-                    <ColumnDefinition Width="1.62*"/>
-                    <ColumnDefinition Width="18"/>
-                    <ColumnDefinition Width="1*"/>
-                </Grid.ColumnDefinitions>
-
-                <!-- ===== LEFT COLUMN ===== -->
-                <StackPanel Grid.Column="0">
-
-                    <!-- Live lot card -->
-                    <Border Style="{StaticResource Card}" ClipToBounds="True">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="240"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <!-- Lot artwork -->
-                            <Grid Grid.Row="0">
-                                <Image Source="{Binding LotImagePath}" Stretch="UniformToFill"/>
-                                <Border>
-                                    <Border.Background>
-                                        <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                            <GradientStop Color="#00000000" Offset="0.0"/>
-                                            <GradientStop Color="#59000000" Offset="0.55"/>
-                                            <GradientStop Color="#EE07080A" Offset="1.0"/>
-                                        </LinearGradientBrush>
-                                    </Border.Background>
-                                </Border>
-
-                                <!-- Certified badge -->
-                                <Border Style="{StaticResource Badge.Accent}" Margin="18,18,0,0"
-                                        HorizontalAlignment="Left" VerticalAlignment="Top" Padding="11,6">
-                                    <StackPanel Orientation="Horizontal">
-                                        <ctrl:IconControl Data="{StaticResource Icon.Shield}"
-                                                          Brush="{DynamicResource AccentBrush}"
-                                                          StrokeWidth="1.9" Width="14" Height="14" Margin="0,0,7,0"/>
-                                        <TextBlock Text="{Binding LotCertifiedLabel}" Style="{StaticResource Label}"
-                                                   FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
-                                        <Rectangle Width="1" Height="11" Fill="#4D34D399" Margin="9,0"/>
-                                        <TextBlock Text="{Binding LotCertifiedId}" Style="{StaticResource Label}"
-                                                   FontFamily="{DynamicResource MonoFont}"
-                                                   Foreground="{DynamicResource AccentBrush}"/>
-                                    </StackPanel>
-                                </Border>
-
-                                <!-- Rarity + hot tags -->
-                                <StackPanel Orientation="Horizontal" Margin="0,18,18,0"
-                                            HorizontalAlignment="Right" VerticalAlignment="Top">
-                                    <Border Style="{StaticResource Badge}" Padding="11,6" Background="#B3000000">
-                                        <StackPanel Orientation="Horizontal">
-                                            <ctrl:IconControl Data="{StaticResource Icon.Layers}"
-                                                              Brush="{Binding LotToneHex, Converter={StaticResource HexBrush}}"
-                                                              StrokeWidth="1.8" Width="13" Height="13" Margin="0,0,7,0"/>
-                                            <TextBlock Text="{Binding LotRarity}" Style="{StaticResource Label}"
-                                                       FontWeight="Bold"
-                                                       Foreground="{Binding LotToneHex, Converter={StaticResource HexBrush}}"/>
-                                        </StackPanel>
-                                    </Border>
-                                    <Border Style="{StaticResource Badge}" Padding="11,6" Margin="8,0,0,0"
-                                            Background="#B3000000">
-                                        <StackPanel Orientation="Horizontal">
-                                            <ctrl:IconControl Data="{StaticResource Icon.Flame}"
-                                                              Brush="#FFF87171"
-                                                              StrokeWidth="1.8" Width="13" Height="13" Margin="0,0,7,0"/>
-                                            <TextBlock Text="HOT LOT" Style="{StaticResource Label}"
-                                                       FontWeight="Bold" Foreground="#FFF87171"/>
-                                        </StackPanel>
-                                    </Border>
-                                </StackPanel>
-
-                                <!-- Countdown pill -->
-                                <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="0,0,18,18"
-                                        Background="#CC000000" BorderBrush="{DynamicResource BorderStrongBrush}"
-                                        BorderThickness="1" CornerRadius="999" Padding="14,9">
-                                    <StackPanel Orientation="Horizontal">
-                                        <ctrl:IconControl Data="{StaticResource Icon.Hourglass}"
-                                                          Brush="{DynamicResource AccentBrush}"
-                                                          StrokeWidth="1.8" Width="15" Height="15" Margin="0,0,9,0"/>
-                                        <TextBlock Text="HAMMER IN" Style="{StaticResource Label}"
-                                                   Foreground="{DynamicResource MutedForegroundBrush}"
-                                                   VerticalAlignment="Center" Margin="0,0,9,0"/>
-                                        <TextBlock Text="{Binding Countdown}" FontSize="16" FontWeight="Bold"
-                                                   FontFamily="{DynamicResource MonoFont}"
-                                                   Foreground="{DynamicResource AccentBrush}"
-                                                   VerticalAlignment="Center"/>
-                                    </StackPanel>
-                                </Border>
-                            </Grid>
-
-                            <!-- Lot meta -->
-                            <StackPanel Grid.Row="1" Margin="24,20,24,22">
-                                <TextBlock Text="{Binding LotSerial}" Style="{StaticResource Label}"
-                                           FontFamily="{DynamicResource MonoFont}"
-                                           Foreground="{Binding LotToneHex, Converter={StaticResource HexBrush}}"
-                                           FontWeight="Bold"/>
-                                <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
-                                    <TextBlock Text="{Binding LotName}" Style="{StaticResource SectionTitle}"
-                                               FontSize="30"/>
-                                    <TextBlock Text="//" Style="{StaticResource SectionTitle}" FontSize="30"
-                                               Foreground="{DynamicResource SubtleForegroundBrush}" Margin="10,0"/>
-                                    <TextBlock Text="{Binding LotSerial}" Style="{StaticResource SectionTitle}" FontSize="30"
-                                               FontFamily="{DynamicResource MonoFont}"
-                                               Foreground="{DynamicResource SubtleForegroundBrush}"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal" Margin="0,12,0,0">
-                                    <ctrl:IconControl Data="{StaticResource Icon.Fingerprint}"
-                                                      Brush="{DynamicResource MutedForegroundBrush}"
-                                                      StrokeWidth="1.7" Width="14" Height="14" Margin="0,0,8,0"/>
-                                    <TextBlock Text="{Binding LotProvenance}" Style="{StaticResource Label}"
-                                               Foreground="{DynamicResource MutedForegroundBrush}"
-                                               VerticalAlignment="Center"/>
-                                </StackPanel>
-
-                                <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
-                                    <Border Style="{StaticResource Badge}" Padding="11,7" Background="{DynamicResource SurfaceBrush}">
-                                        <TextBlock Text="{Binding LotFloor}" Style="{StaticResource Label}"
-                                                   Foreground="{DynamicResource ForegroundBrush}" FontWeight="Bold"/>
-                                    </Border>
-                                    <Border Style="{StaticResource Badge}" Padding="11,7" Margin="9,0,0,0"
-                                            Background="{DynamicResource SurfaceBrush}">
-                                        <TextBlock Text="ESCROW RELEASE ON HAMMER" Style="{StaticResource Label}"
-                                                   Foreground="{DynamicResource MutedForegroundBrush}"/>
-                                    </Border>
-                                    <Border Style="{StaticResource Badge}" Padding="11,7" Margin="9,0,0,0"
-                                            Background="{DynamicResource SurfaceBrush}">
-                                        <TextBlock Text="TRANSFER LOCKED 72H" Style="{StaticResource Label}"
-                                                   Foreground="{DynamicResource MutedForegroundBrush}"/>
-                                    </Border>
-                                </StackPanel>
-                            </StackPanel>
-                        </Grid>
-                    </Border>
-
-                    <!-- Provenance & Attributes -->
-                    <Border Style="{StaticResource Card}" Padding="22,20" Margin="0,18,0,0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0" Margin="0,0,0,6">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <ctrl:IconControl Data="{StaticResource Icon.Fingerprint}"
-                                                      Brush="{DynamicResource ForegroundBrush}"
-                                                      StrokeWidth="1.8" Width="16" Height="16" Margin="0,0,9,0"/>
-                                    <TextBlock Text="{Binding ProvenanceTitle}" Style="{StaticResource PanelTitle}"/>
-                                </StackPanel>
-                                <TextBlock Text="8 ATTRIBUTES · CHAIN VERIFIED" Style="{StaticResource Label}"
-                                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                            </Grid>
-
-                            <ItemsControl Grid.Row="1" ItemsSource="{Binding Attributes}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
-                                                Padding="0,12">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="150"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                </Grid.ColumnDefinitions>
-                                                <TextBlock Grid.Column="0" Text="{Binding Label}"
-                                                           Style="{StaticResource Label}"
-                                                           VerticalAlignment="Center"/>
-                                                <TextBlock Grid.Column="1" Text="{Binding Value}"
-                                                           FontSize="12" VerticalAlignment="Center">
-                                                    <TextBlock.Style>
-                                                        <Style TargetType="TextBlock" BasedOn="{StaticResource Label}">
-                                                            <Setter Property="Foreground" Value="{DynamicResource ForegroundBrush}"/>
-                                                            <Setter Property="FontWeight" Value="SemiBold"/>
-                                                            <Style.Triggers>
-                                                                <DataTrigger Binding="{Binding IsAccent}" Value="True">
-                                                                    <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                                                </DataTrigger>
-                                                            </Style.Triggers>
-                                                        </Style>
-                                                    </TextBlock.Style>
-                                                </TextBlock>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-                        </Grid>
-                    </Border>
-
-                    <!-- Recent Hammer Prices -->
-                    <Border Style="{StaticResource Card}" Padding="22,20" Margin="0,18,0,0">
-                        <Grid>
-                            <Grid.RowDefinitions>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                                <RowDefinition Height="Auto"/>
-                            </Grid.RowDefinitions>
-
-                            <Grid Grid.Row="0" Margin="0,0,0,4">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <ctrl:IconControl Data="{StaticResource Icon.TrendingUp}"
-                                                      Brush="{DynamicResource ForegroundBrush}"
-                                                      StrokeWidth="1.8" Width="16" Height="16" Margin="0,0,9,0"/>
-                                    <TextBlock Text="{Binding HammerTitle}" Style="{StaticResource PanelTitle}"/>
-                                </StackPanel>
-                                <TextBlock Text="{Binding HammerFootnote}" Style="{StaticResource Label}"
-                                           HorizontalAlignment="Right" VerticalAlignment="Center"/>
-                            </Grid>
-
-                            <ItemsControl Grid.Row="1" ItemsSource="{Binding HammerPrices}">
-                                <ItemsControl.ItemTemplate>
-                                    <DataTemplate>
-                                        <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1"
-                                                Padding="0,12">
-                                            <Grid>
-                                                <Grid.ColumnDefinitions>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="*"/>
-                                                    <ColumnDefinition Width="Auto"/>
-                                                    <ColumnDefinition Width="86"/>
-                                                </Grid.ColumnDefinitions>
-
-                                                <Ellipse Grid.Column="0" Width="9" Height="9" VerticalAlignment="Center"
-                                                         Margin="0,0,12,0"
-                                                         Fill="{Binding ToneHex, Converter={StaticResource HexBrush}}"/>
-
-                                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                                    <StackPanel Orientation="Horizontal">
-                                                        <TextBlock Text="{Binding Item}" Style="{StaticResource Label}"
-                                                                   FontSize="12" FontWeight="Bold"
-                                                                   Foreground="{DynamicResource ForegroundBrush}"/>
-                                                        <TextBlock Text="{Binding Serial}" Style="{StaticResource Label}"
-                                                                   FontFamily="{DynamicResource MonoFont}"
-                                                                   Margin="8,0,0,0"/>
-                                                    </StackPanel>
-                                                </StackPanel>
-
-                                                <TextBlock Grid.Column="2" Text="{Binding Price}" FontSize="14"
-                                                           FontWeight="Bold" FontFamily="{DynamicResource MonoFont}"
-                                                           Foreground="{DynamicResource ForegroundBrush}"
-                                                           VerticalAlignment="Center"/>
-
-                                                <StackPanel Grid.Column="3" Orientation="Horizontal"
-                                                            HorizontalAlignment="Right" VerticalAlignment="Center">
-                                                    <TextBlock Text="{Binding Delta}" FontWeight="Bold">
-                                                        <TextBlock.Style>
-                                                            <Style TargetType="TextBlock" BasedOn="{StaticResource Label}">
-                                                                <Setter Property="Foreground" Value="{DynamicResource DestructiveBrush}"/>
-                                                                <Style.Triggers>
-                                                                    <DataTrigger Binding="{Binding DeltaIsPositive}" Value="True">
-                                                                        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                                                    </DataTrigger>
-                                                                </Style.Triggers>
-                                                            </Style>
-                                                        </TextBlock.Style>
-                                                    </TextBlock>
-                                                    <TextBlock Text="{Binding When}" Style="{StaticResource Label}"
-                                                               Margin="9,0,0,0" VerticalAlignment="Center"/>
-                                                </StackPanel>
-                                            </Grid>
-                                        </Border>
-                                    </DataTemplate>
-                                </ItemsControl.ItemTemplate>
-                            </ItemsControl>
-
-                            <Button Grid.Row="2" Style="{StaticResource Button.Ghost}" Padding="0" Margin="0,14,0,0"
-                                    HorizontalAlignment="Left" Cursor="Hand">
-                                <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                    <TextBlock Text="FULL PRICE HISTORY" Style="{StaticResource Label}" FontWeight="Bold"
-                                               Foreground="{DynamicResource MutedForegroundBrush}" VerticalAlignment="Center"/>
-                                    <ctrl:IconControl Data="{StaticResource Icon.ArrowRight}"
-                                                      Brush="{DynamicResource MutedForegroundBrush}"
-                                                      StrokeWidth="1.8" Width="14" Height="14" Margin="8,0,0,0"/>
-                                </StackPanel>
+                <!-- Rarity filters - only in browse -->
+                <ItemsControl ItemsSource="{Binding RarityFilters}" VerticalAlignment="Center" Visibility="{Binding IsBrowseTab, Converter={StaticResource BoolVis}}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <StackPanel Orientation="Horizontal"/>
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate>
+                            <Button Margin="0,0,6,0" Cursor="Hand"
+                                    Command="{Binding DataContext.SelectRarityCommand, RelativeSource={RelativeSource AncestorType=UserControl}}"
+                                    CommandParameter="{Binding}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource Button.Outline}">
+                                        <Setter Property="Padding" Value="14,8"/>
+                                        <Setter Property="FontSize" Value="11"/>
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                <Setter Property="Background" Value="{Binding ToneHex, Converter={StaticResource HexBrush}}"/>
+                                                <Setter Property="Foreground" Value="#FF0A0B0D"/>
+                                                <Setter Property="FontWeight" Value="Bold"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <TextBlock Text="{Binding Name}"/>
                             </Button>
-                        </Grid>
-                    </Border>
-                </StackPanel>
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </StackPanel>
 
-                <!-- ===== RIGHT COLUMN : bid panel ===== -->
-                <Border Grid.Column="2" Style="{StaticResource Card}" Padding="22,20" VerticalAlignment="Top">
-                    <StackPanel>
-                        <Grid Margin="0,0,0,16">
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <Ellipse Width="7" Height="7" Fill="{DynamicResource AccentBrush}"
-                                         VerticalAlignment="Center" Margin="0,0,9,0"/>
-                                <TextBlock Text="LIVE BID PANEL" Style="{StaticResource PanelTitle}"/>
-                            </StackPanel>
-                            <Border Style="{StaticResource Badge}" HorizontalAlignment="Right" Padding="9,4"
-                                    Background="{DynamicResource SurfaceBrush}">
-                                <TextBlock Text="AUTO-PROXY OFF" Style="{StaticResource Label}"/>
-                            </Border>
-                        </Grid>
+            <StackPanel Grid.Column="1" Orientation="Horizontal" VerticalAlignment="Center">
+                <TextBlock Text="{Binding StatusMessage}" Style="{StaticResource Label}" Foreground="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,12,0" Visibility="{Binding StatusMessage, Converter={StaticResource StrVis}}"/>
+                <Border Style="{StaticResource Badge.Accent}" Padding="10,6">
+                    <StackPanel Orientation="Horizontal">
+                        <Ellipse Width="6" Height="6" Fill="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,6,0"/>
+                        <TextBlock Text="AUCTION OPEN • 148 LOTS" Style="{StaticResource Label}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" FontSize="11"/>
+                    </StackPanel>
+                </Border>
+            </StackPanel>
+        </Grid>
 
-                        <!-- Current bid -->
-                        <TextBlock Text="CURRENT BID" Style="{StaticResource Label}"/>
-                        <TextBlock Text="{Binding CurrentBid}" FontSize="40" FontWeight="Bold"
-                                   FontFamily="{DynamicResource MonoFont}"
-                                   Foreground="{DynamicResource ForegroundBrush}" Margin="0,6,0,4"/>
-                        <TextBlock Text="{Binding CurrentBidMeta}" Style="{StaticResource Label}"
-                                   Foreground="{DynamicResource MutedForegroundBrush}"/>
+        <!-- BROWSE TAB CONTENT -->
+        <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" Visibility="{Binding IsBrowseTab, Converter={StaticResource BoolVis}}">
+            <StackPanel Margin="28,0,28,24">
 
-                        <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,18"/>
+                <!-- Summary cards -->
+                <Grid Margin="0,0,0,16">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
 
-                        <!-- Top bidder -->
+                    <Border Grid.Column="0" Style="{StaticResource Card}" Margin="0,0,12,0" Padding="18,14">
                         <Grid>
                             <Grid.ColumnDefinitions>
                                 <ColumnDefinition Width="Auto"/>
                                 <ColumnDefinition Width="*"/>
                             </Grid.ColumnDefinitions>
-                            <Border Grid.Column="0" Width="38" Height="38" CornerRadius="999"
-                                    Background="{DynamicResource MutedBrush}" Margin="0,0,12,0">
-                                <ctrl:IconControl Data="{StaticResource Icon.User}"
-                                                  Brush="{DynamicResource MutedForegroundBrush}"
-                                                  StrokeWidth="1.7" Width="19" Height="19"/>
+                            <Border Grid.Column="0" Width="40" Height="40" CornerRadius="10" Background="#2634D399" Margin="0,0,12,0">
+                                <ctrl:IconControl Data="{StaticResource Icon.Gold}" Brush="{DynamicResource AccentBrush}" Width="20" Height="20"/>
                             </Border>
                             <StackPanel Grid.Column="1" VerticalAlignment="Center">
-                                <TextBlock Text="TOP BIDDER" Style="{StaticResource Label}"/>
-                                <TextBlock Text="{Binding TopBidder}" FontWeight="Bold" FontSize="14"
-                                           Foreground="{DynamicResource ForegroundBrush}" Margin="0,3,0,2"/>
-                                <TextBlock Text="{Binding TopBidderMeta}" Style="{StaticResource Label}"
-                                           Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                                <TextBlock Text="{Binding EscrowPoolLabel}" Style="{StaticResource Label}" FontSize="10"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                    <TextBlock Text="{Binding EscrowPoolValue}" FontSize="18" FontWeight="Bold" FontFamily="{DynamicResource MonoFont}" Foreground="{DynamicResource ForegroundBrush}"/>
+                                    <TextBlock Text="{Binding EscrowPoolDelta}" Style="{StaticResource Label}" Foreground="{DynamicResource AccentBrush}" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0,0,0" FontSize="10"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding EscrowPoolMeta}" Style="{StaticResource Label}" FontSize="10" Foreground="{DynamicResource SubtleForegroundBrush}"/>
                             </StackPanel>
                         </Grid>
+                    </Border>
 
-                        <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,18"/>
-
-                        <!-- Buyout -->
+                    <Border Grid.Column="1" Style="{StaticResource Card}" Margin="0,0,12,0" Padding="18,14">
                         <Grid>
-                            <StackPanel>
-                                <TextBlock Text="BUYOUT" Style="{StaticResource Label}"/>
-                                <TextBlock Text="{Binding Buyout}" FontSize="22" FontWeight="Bold"
-                                           FontFamily="{DynamicResource MonoFont}"
-                                           Foreground="{DynamicResource ForegroundBrush}" Margin="0,5,0,3"/>
-                                <TextBlock Text="{Binding BuyoutMeta}" Style="{StaticResource Label}"
-                                           Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Width="40" Height="40" CornerRadius="10" Background="{DynamicResource MutedBrush}" Margin="0,0,12,0">
+                                <ctrl:IconControl Data="{StaticResource Icon.Eye}" Brush="{DynamicResource ForegroundBrush}" Width="20" Height="20"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding WatchlistLabel}" Style="{StaticResource Label}" FontSize="10"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                    <TextBlock Text="{Binding WatchlistValue}" FontSize="18" FontWeight="Bold" FontFamily="{DynamicResource MonoFont}" Foreground="{DynamicResource ForegroundBrush}"/>
+                                    <TextBlock Text="{Binding WatchlistDelta}" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}" VerticalAlignment="Center" Margin="8,0,0,0" FontSize="10"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding WatchlistMeta}" Style="{StaticResource Label}" FontSize="10" Foreground="{DynamicResource SubtleForegroundBrush}"/>
                             </StackPanel>
-                            <TextBlock Text="{Binding BidProgressLabel}" Style="{StaticResource Label}"
-                                       HorizontalAlignment="Right" VerticalAlignment="Top"
-                                       FontWeight="Bold" Foreground="{DynamicResource AccentBrush}"/>
                         </Grid>
+                    </Border>
 
-                        <Border Style="{StaticResource ProgressTrack}" Margin="0,14,0,0" Height="8">
+                    <Border Grid.Column="2" Style="{StaticResource Card}" Padding="18,14">
+                        <Grid>
+                            <Grid.ColumnDefinitions>
+                                <ColumnDefinition Width="Auto"/>
+                                <ColumnDefinition Width="*"/>
+                            </Grid.ColumnDefinitions>
+                            <Border Grid.Column="0" Width="40" Height="40" CornerRadius="10" Background="{DynamicResource MutedBrush}" Margin="0,0,12,0">
+                                <ctrl:IconControl Data="{StaticResource Icon.Trophy}" Brush="{DynamicResource ForegroundBrush}" Width="20" Height="20"/>
+                            </Border>
+                            <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                <TextBlock Text="{Binding LotsWonLabel}" Style="{StaticResource Label}" FontSize="10"/>
+                                <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                    <TextBlock Text="{Binding LotsWonValue}" FontSize="18" FontWeight="Bold" FontFamily="{DynamicResource MonoFont}" Foreground="{DynamicResource ForegroundBrush}"/>
+                                    <TextBlock Text="{Binding LotsWonDelta}" Style="{StaticResource Label}" Foreground="{DynamicResource AccentBrush}" FontWeight="Bold" VerticalAlignment="Center" Margin="8,0,0,0" FontSize="10"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding LotsWonMeta}" Style="{StaticResource Label}" FontSize="10" Foreground="{DynamicResource SubtleForegroundBrush}"/>
+                            </StackPanel>
+                        </Grid>
+                    </Border>
+                </Grid>
+
+                <!-- Main auction grid -->
+                <Grid>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1.5*"/>
+                        <ColumnDefinition Width="16"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Left: Lots list + details -->
+                    <StackPanel Grid.Column="0">
+                        <!-- Lots List -->
+                        <Border Style="{StaticResource Card}" Padding="16" Margin="0,0,0,16">
+                            <StackPanel>
+                                <TextBlock Text="ACTIVE LOTS - DRAGON BALLS, GEMS, SUPER GEAR" Style="{StaticResource PanelTitle}" Margin="0,0,0,12"/>
+                                <ScrollViewer MaxHeight="280" VerticalScrollBarVisibility="Auto">
+                                    <ItemsControl ItemsSource="{Binding AuctionLots}">
+                                        <ItemsControl.ItemTemplate>
+                                            <DataTemplate>
+                                                <Border Margin="0,0,0,8" Padding="10" CornerRadius="8" Cursor="Hand" Background="{DynamicResource SurfaceBrush}">
+                                                    <Border.Style>
+                                                        <Style TargetType="Border">
+                                                            <Setter Property="BorderBrush" Value="{DynamicResource BorderBrush}"/>
+                                                            <Setter Property="BorderThickness" Value="1"/>
+                                                            <Style.Triggers>
+                                                                <DataTrigger Value="True">
+                                                                    <DataTrigger.Binding>
+                                                                        <MultiBinding Converter="{x:Static cmn:EqualityConverter.Instance}">
+                                                                            <Binding/>
+                                                                            <Binding Path="DataContext.SelectedLot" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                                        </MultiBinding>
+                                                                    </DataTrigger.Binding>
+                                                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                                    <Setter Property="BorderThickness" Value="2"/>
+                                                                </DataTrigger>
+                                                            </Style.Triggers>
+                                                        </Style>
+                                                    </Border.Style>
+                                                    <Grid>
+                                                        <Grid.ColumnDefinitions>
+                                                            <ColumnDefinition Width="50"/>
+                                                            <ColumnDefinition Width="*"/>
+                                                            <ColumnDefinition Width="Auto"/>
+                                                        </Grid.ColumnDefinitions>
+                                                        <Border Grid.Column="0" Width="50" Height="50" CornerRadius="8" ClipToBounds="True">
+                                                            <Image Source="{Binding Item.ImagePath}" Stretch="UniformToFill"/>
+                                                        </Border>
+                                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding Item.Name}" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource ForegroundBrush}" TextTrimming="CharacterEllipsis"/>
+                                                            <StackPanel Orientation="Horizontal" Margin="0,2,0,0">
+                                                                <TextBlock Text="{Binding CurrentBid, StringFormat='{}{0} CPs'}" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource AccentBrush}"/>
+                                                                <TextBlock Text="{Binding BidCount, StringFormat=' • {0} bids'}" Style="{StaticResource Label}" FontSize="10" Margin="6,0,0,0"/>
+                                                            </StackPanel>
+                                                        </StackPanel>
+                                                        <StackPanel Grid.Column="2" VerticalAlignment="Center">
+                                                            <TextBlock Text="{Binding TimeRemaining, StringFormat='{}{0:hh\\:mm}'}" FontFamily="{DynamicResource MonoFont}" FontSize="11" Foreground="{DynamicResource MutedForegroundBrush}"/>
+                                                            <Border Style="{StaticResource Badge}" Padding="6,2" Margin="0,4,0,0" Background="#2634D399">
+                                                                <TextBlock Text="{Binding Item.Rarity}" FontSize="9" FontWeight="Bold" Foreground="{Binding Item.GetRarityHex, Converter={StaticResource HexBrush}}"/>
+                                                            </Border>
+                                                        </StackPanel>
+                                                        <Button Grid.Column="0" Grid.ColumnSpan="3" Opacity="0" Command="{Binding DataContext.SelectLotCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                                    </Grid>
+                                                </Border>
+                                            </DataTemplate>
+                                        </ItemsControl.ItemTemplate>
+                                    </ItemsControl>
+                                </ScrollViewer>
+                            </StackPanel>
+                        </Border>
+
+                        <!-- Live lot card -->
+                        <Border Style="{StaticResource Card}" ClipToBounds="True">
                             <Grid>
-                                <Grid.ColumnDefinitions>
-                                    <ColumnDefinition Width="{Binding BidProgress, Converter={StaticResource PctGrid}}"/>
-                                    <ColumnDefinition Width="*"/>
-                                </Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Style="{StaticResource ProgressFill}" Height="8"/>
+                                <Grid.RowDefinitions>
+                                    <RowDefinition Height="200"/>
+                                    <RowDefinition Height="Auto"/>
+                                </Grid.RowDefinitions>
+
+                                <Grid Grid.Row="0">
+                                    <Image Source="{Binding LotImagePath}" Stretch="UniformToFill"/>
+                                    <Border>
+                                        <Border.Background>
+                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
+                                                <GradientStop Color="#00000000" Offset="0.0"/>
+                                                <GradientStop Color="#EE07080A" Offset="1.0"/>
+                                            </LinearGradientBrush>
+                                        </Border.Background>
+                                    </Border>
+
+                                    <Border Style="{StaticResource Badge.Accent}" Margin="14" HorizontalAlignment="Left" VerticalAlignment="Top" Padding="10,5">
+                                        <StackPanel Orientation="Horizontal">
+                                            <ctrl:IconControl Data="{StaticResource Icon.Shield}" Brush="{DynamicResource AccentBrush}" Width="14" Height="14" Margin="0,0,6,0"/>
+                                            <TextBlock Text="{Binding LotCertifiedLabel}" Style="{StaticResource Label}" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" FontSize="11"/>
+                                            <TextBlock Text="{Binding LotCertifiedId}" Style="{StaticResource Label}" FontFamily="{DynamicResource MonoFont}" Foreground="{DynamicResource AccentBrush}" Margin="6,0,0,0" FontSize="10"/>
+                                        </StackPanel>
+                                    </Border>
+
+                                    <StackPanel Orientation="Horizontal" Margin="14" HorizontalAlignment="Right" VerticalAlignment="Top">
+                                        <Border Style="{StaticResource Badge}" Padding="8,4" Background="#B3000000">
+                                            <TextBlock Text="{Binding LotRarity}" Style="{StaticResource Label}" FontWeight="Bold" Foreground="{Binding LotToneHex, Converter={StaticResource HexBrush}}" FontSize="11"/>
+                                        </Border>
+                                    </StackPanel>
+
+                                    <Border HorizontalAlignment="Right" VerticalAlignment="Bottom" Margin="14" Background="#CC000000" BorderBrush="{DynamicResource BorderStrongBrush}" BorderThickness="1" CornerRadius="20" Padding="12,8">
+                                        <StackPanel Orientation="Horizontal">
+                                            <ctrl:IconControl Data="{StaticResource Icon.Hourglass}" Brush="{DynamicResource AccentBrush}" Width="14" Height="14" Margin="0,0,8,0"/>
+                                            <TextBlock Text="{Binding Countdown}" FontSize="14" FontWeight="Bold" FontFamily="{DynamicResource MonoFont}" Foreground="{DynamicResource AccentBrush}"/>
+                                        </StackPanel>
+                                    </Border>
+                                </Grid>
+
+                                <StackPanel Grid.Row="1" Margin="20,16">
+                                    <TextBlock Text="{Binding LotSerial}" Style="{StaticResource Label}" FontFamily="{DynamicResource MonoFont}" Foreground="{Binding LotToneHex, Converter={StaticResource HexBrush}}" FontWeight="Bold" FontSize="11"/>
+                                    <TextBlock Text="{Binding LotName}" Style="{StaticResource SectionTitle}" FontSize="22" Margin="0,6,0,0"/>
+                                    <StackPanel Orientation="Horizontal" Margin="0,8,0,0">
+                                        <ctrl:IconControl Data="{StaticResource Icon.Dragon}" Brush="{DynamicResource MutedForegroundBrush}" Width="14" Height="14" Margin="0,0,6,0"/>
+                                        <TextBlock Text="{Binding LotProvenance}" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}" FontSize="11"/>
+                                    </StackPanel>
+                                </StackPanel>
                             </Grid>
                         </Border>
 
-                        <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,18"/>
-
-                        <!-- Increment chips -->
-                        <TextBlock Text="BID INCREMENT" Style="{StaticResource Label}" Margin="0,0,0,10"/>
-                        <ItemsControl ItemsSource="{Binding Increments}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <UniformGrid Rows="1"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Button Margin="0,0,8,0" Cursor="Hand"
-                                            Command="{Binding DataContext.SelectIncrementCommand,
-                                                      RelativeSource={RelativeSource AncestorType=UserControl}}"
-                                            CommandParameter="{Binding}">
-                                        <Button.Style>
-                                            <Style TargetType="Button" BasedOn="{StaticResource Button.Outline}">
-                                                <Setter Property="Padding" Value="0,10"/>
-                                                <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
-                                                <Setter Property="FontSize" Value="13"/>
-                                                <Setter Property="FontWeight" Value="Bold"/>
-                                                <Style.Triggers>
-                                                    <DataTrigger Binding="{Binding IsSelected}" Value="True">
-                                                        <Setter Property="Background" Value="{DynamicResource ElevatedBrush}"/>
-                                                        <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                                    </DataTrigger>
-                                                </Style.Triggers>
-                                            </Style>
-                                        </Button.Style>
-                                        <TextBlock Text="{Binding Label}" HorizontalAlignment="Center"/>
-                                    </Button>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-
-                        <!-- Place bid -->
-                        <Button Style="{StaticResource Button.Accent}" Height="50" Margin="0,20,0,0"
-                                Command="{Binding PlaceBidCommand}">
-                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" VerticalAlignment="Center">
-                                <ctrl:IconControl Data="{StaticResource Icon.Gavel}"
-                                                  Brush="#FF06120C"
-                                                  StrokeWidth="1.9" Width="16" Height="16" Margin="0,0,10,0"/>
-                                <TextBlock Text="{Binding PlaceBidLabel}" FontWeight="Bold" FontSize="14"/>
-                            </StackPanel>
-                        </Button>
-
-                        <Button Height="46" Margin="0,10,0,0" Cursor="Hand"
-                                Command="{Binding WatchCommand}">
-                            <Button.Style>
-                                <Style TargetType="Button" BasedOn="{StaticResource Button.Outline}">
-                                    <Style.Triggers>
-                                        <DataTrigger Binding="{Binding IsWatching}" Value="True">
-                                            <Setter Property="Background" Value="#2634D399"/>
-                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
-                                        </DataTrigger>
-                                    </Style.Triggers>
-                                </Style>
-                            </Button.Style>
-                            <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                                <ctrl:IconControl Data="{StaticResource Icon.Eye}"
-                                                  Brush="{DynamicResource ForegroundBrush}"
-                                                  StrokeWidth="1.7" Width="15" Height="15" Margin="0,0,9,0"/>
-                                <TextBlock Text="{Binding WatchLabel}" Style="{StaticResource Label}"
-                                           FontWeight="Bold" FontSize="12"
-                                           Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center"/>
-                            </StackPanel>
-                        </Button>
-
-                        <StackPanel Orientation="Horizontal" Margin="0,18,0,0">
-                            <ctrl:IconControl Data="{StaticResource Icon.Info}"
-                                              Brush="{DynamicResource SubtleForegroundBrush}"
-                                              StrokeWidth="1.8" Width="13" Height="13" Margin="0,0,8,0"/>
-                            <TextBlock Text="BIDS ARE FINAL · ESCROW CLEARS IN 72H"
-                                       Style="{StaticResource Label}" Foreground="{DynamicResource SubtleForegroundBrush}"
-                                       VerticalAlignment="Center" TextWrapping="Wrap"/>
-                        </StackPanel>
-                    </StackPanel>
-                </Border>
-            </Grid>
-
-            <!-- ============================================================
-                 ACTIVE VAULT DROPS CAROUSEL
-                 ============================================================ -->
-            <Border Style="{StaticResource Card}" Padding="22,20" Margin="0,18,0,0">
-                <Grid>
-                    <Grid.RowDefinitions>
-                        <RowDefinition Height="Auto"/>
-                        <RowDefinition Height="Auto"/>
-                    </Grid.RowDefinitions>
-
-                    <Grid Grid.Row="0" Margin="0,0,0,16">
-                        <StackPanel Orientation="Horizontal" VerticalAlignment="Center">
-                            <ctrl:IconControl Data="{StaticResource Icon.Box}"
-                                              Brush="{DynamicResource ForegroundBrush}"
-                                              StrokeWidth="1.8" Width="16" Height="16" Margin="0,0,9,0"/>
-                            <TextBlock Text="{Binding VaultDropsTitle}" Style="{StaticResource PanelTitle}"/>
-                            <Border Style="{StaticResource Badge.Accent}" Margin="12,0,0,0" Padding="8,3">
-                                <TextBlock Text="04 LIVE" Style="{StaticResource Label}" FontWeight="Bold"
-                                           Foreground="{DynamicResource AccentBrush}"/>
-                            </Border>
-                        </StackPanel>
-
-                        <StackPanel Orientation="Horizontal" HorizontalAlignment="Right">
-                            <Button Style="{StaticResource Button.Icon}" Width="32" Height="32" Margin="0,0,8,0"
-                                    ToolTip="Previous">
-                                <ctrl:IconControl Data="{StaticResource Icon.ChevronLeft}"
-                                                  Brush="{DynamicResource ForegroundBrush}"
-                                                  StrokeWidth="1.9" Width="15" Height="15"/>
-                            </Button>
-                            <Button Style="{StaticResource Button.Icon}" Width="32" Height="32"
-                                    ToolTip="Next">
-                                <ctrl:IconControl Data="{StaticResource Icon.ChevronRight}"
-                                                  Brush="{DynamicResource ForegroundBrush}"
-                                                  StrokeWidth="1.9" Width="15" Height="15"/>
-                            </Button>
-                        </StackPanel>
-                    </Grid>
-
-                    <ScrollViewer Grid.Row="1" HorizontalScrollBarVisibility="Auto"
-                                  VerticalScrollBarVisibility="Disabled">
-                        <ItemsControl ItemsSource="{Binding VaultDrops}">
-                            <ItemsControl.ItemsPanel>
-                                <ItemsPanelTemplate>
-                                    <StackPanel Orientation="Horizontal"/>
-                                </ItemsPanelTemplate>
-                            </ItemsControl.ItemsPanel>
-                            <ItemsControl.ItemTemplate>
-                                <DataTemplate>
-                                    <Border Width="268" Style="{StaticResource Card}" Margin="0,0,14,0"
-                                            Padding="12" Background="{DynamicResource SurfaceBrush}">
-                                        <Grid>
-                                            <Grid.RowDefinitions>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                                <RowDefinition Height="Auto"/>
-                                            </Grid.RowDefinitions>
-
-                                            <Border Grid.Row="0" Height="112" CornerRadius="10" ClipToBounds="True">
+                        <!-- Attributes -->
+                        <Border Style="{StaticResource Card}" Padding="18,16" Margin="0,14,0,0">
+                            <StackPanel>
+                                <StackPanel Orientation="Horizontal" Margin="0,0,0,10">
+                                    <ctrl:IconControl Data="{StaticResource Icon.Sword}" Brush="{DynamicResource ForegroundBrush}" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding ProvenanceTitle}" Style="{StaticResource PanelTitle}" FontSize="12"/>
+                                </StackPanel>
+                                <ItemsControl ItemsSource="{Binding Attributes}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate>
+                                            <Border BorderBrush="{DynamicResource BorderBrush}" BorderThickness="0,0,0,1" Padding="0,8">
                                                 <Grid>
-                                                    <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
-                                                    <Border>
-                                                        <Border.Background>
-                                                            <LinearGradientBrush StartPoint="0,0" EndPoint="0,1">
-                                                                <GradientStop Color="#59000000" Offset="0"/>
-                                                                <GradientStop Color="#00000000" Offset="0.6"/>
-                                                            </LinearGradientBrush>
-                                                        </Border.Background>
-                                                    </Border>
-                                                    <Border Style="{StaticResource Badge}" Margin="9" Padding="8,4"
-                                                            HorizontalAlignment="Left" VerticalAlignment="Top"
-                                                            Background="#B3000000">
-                                                        <TextBlock Text="{Binding Rarity}" Style="{StaticResource Label}"
-                                                                   FontWeight="Bold"
-                                                                   Foreground="{Binding ToneHex, Converter={StaticResource HexBrush}}"/>
-                                                    </Border>
+                                                    <Grid.ColumnDefinitions>
+                                                        <ColumnDefinition Width="120"/>
+                                                        <ColumnDefinition Width="*"/>
+                                                    </Grid.ColumnDefinitions>
+                                                    <TextBlock Grid.Column="0" Text="{Binding Label}" Style="{StaticResource Label}" FontSize="11"/>
+                                                    <TextBlock Grid.Column="1" Text="{Binding Value}" FontSize="11" FontWeight="SemiBold" Foreground="{DynamicResource ForegroundBrush}"/>
                                                 </Grid>
                                             </Border>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </StackPanel>
 
-                                            <StackPanel Grid.Row="1" Margin="2,12,2,0">
-                                                <TextBlock Text="{Binding Name}" Style="{StaticResource Label}"
-                                                           FontSize="13" FontWeight="Bold"
-                                                           Foreground="{DynamicResource ForegroundBrush}"/>
-                                                <TextBlock Text="{Binding Edition}" Style="{StaticResource Label}"
-                                                           Margin="0,5,0,0"
-                                                           Foreground="{DynamicResource SubtleForegroundBrush}"/>
-                                            </StackPanel>
+                    <!-- Right: Bid Panel -->
+                    <Border Grid.Column="2" Style="{StaticResource Card}" Padding="20,16" VerticalAlignment="Top">
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal" Margin="0,0,0,14">
+                                <Ellipse Width="8" Height="8" Fill="{DynamicResource AccentBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <TextBlock Text="LIVE BID PANEL - CONQUER AUCTION" Style="{StaticResource PanelTitle}" FontSize="12"/>
+                            </StackPanel>
 
-                                            <StackPanel Grid.Row="2" Margin="2,12,2,2">
-                                                <Border Style="{StaticResource ProgressTrack}" Height="4">
-                                                    <Grid>
-                                                        <Grid.ColumnDefinitions>
-                                                            <ColumnDefinition Width="{Binding Progress, Converter={StaticResource PctGrid}}"/>
-                                                            <ColumnDefinition Width="*"/>
-                                                        </Grid.ColumnDefinitions>
-                                                        <Border Grid.Column="0" Style="{StaticResource ProgressFill}"
-                                                                Height="4"
-                                                                Background="{Binding ToneHex, Converter={StaticResource HexBrush}}"/>
-                                                    </Grid>
-                                                </Border>
-                                                <TextBlock Text="{Binding DropWindow}" Style="{StaticResource Label}"
-                                                           Margin="0,9,0,0" FontFamily="{DynamicResource MonoFont}"
-                                                           Foreground="{DynamicResource MutedForegroundBrush}"/>
+                            <TextBlock Text="CURRENT BID" Style="{StaticResource Label}" FontSize="10"/>
+                            <TextBlock Text="{Binding CurrentBid}" FontSize="32" FontWeight="Bold" FontFamily="{DynamicResource MonoFont}" Foreground="{DynamicResource ForegroundBrush}" Margin="0,4,0,2"/>
+                            <TextBlock Text="{Binding CurrentBidMeta}" Style="{StaticResource Label}" FontSize="11"/>
+
+                            <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,14"/>
+
+                            <Grid>
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="Auto"/>
+                                    <ColumnDefinition Width="*"/>
+                                </Grid.ColumnDefinitions>
+                                <Border Grid.Column="0" Width="36" Height="36" CornerRadius="18" Background="{DynamicResource MutedBrush}" Margin="0,0,10,0">
+                                    <ctrl:IconControl Data="{StaticResource Icon.User}" Brush="{DynamicResource MutedForegroundBrush}" Width="18" Height="18"/>
+                                </Border>
+                                <StackPanel Grid.Column="1" VerticalAlignment="Center">
+                                    <TextBlock Text="TOP BIDDER" Style="{StaticResource Label}" FontSize="10"/>
+                                    <TextBlock Text="{Binding TopBidder}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}" Margin="0,2,0,0"/>
+                                    <TextBlock Text="{Binding TopBidderMeta}" Style="{StaticResource Label}" FontSize="10"/>
+                                </StackPanel>
+                            </Grid>
+
+                            <Rectangle Height="1" Fill="{DynamicResource BorderBrush}" Margin="0,14"/>
+
+                            <Grid>
+                                <StackPanel>
+                                    <TextBlock Text="BUYOUT" Style="{StaticResource Label}" FontSize="10"/>
+                                    <TextBlock Text="{Binding Buyout}" FontSize="18" FontWeight="Bold" FontFamily="{DynamicResource MonoFont}" Foreground="{DynamicResource ForegroundBrush}" Margin="0,4,0,0"/>
+                                </StackPanel>
+                                <TextBlock Text="{Binding BidProgressLabel}" Style="{StaticResource Label}" HorizontalAlignment="Right" FontWeight="Bold" Foreground="{DynamicResource AccentBrush}" FontSize="10"/>
+                            </Grid>
+
+                            <Border Style="{StaticResource ProgressTrack}" Margin="0,10,0,0" Height="6">
+                                <Grid>
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="{Binding BidProgress, Converter={StaticResource PctGrid}}"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <Border Grid.Column="0" Style="{StaticResource ProgressFill}" Height="6"/>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock Text="BID INCREMENT" Style="{StaticResource Label}" FontSize="10" Margin="0,14,0,8"/>
+                            <ItemsControl ItemsSource="{Binding Increments}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate><UniformGrid Rows="1"/></ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate>
+                                        <Button Margin="0,0,6,0" Cursor="Hand" Command="{Binding DataContext.SelectIncrementCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                            <Button.Style>
+                                                <Style TargetType="Button" BasedOn="{StaticResource Button.Outline}">
+                                                    <Setter Property="Padding" Value="0,8"/>
+                                                    <Setter Property="FontFamily" Value="{DynamicResource MonoFont}"/>
+                                                    <Setter Property="FontSize" Value="11"/>
+                                                    <Style.Triggers>
+                                                        <DataTrigger Binding="{Binding IsSelected}" Value="True">
+                                                            <Setter Property="Background" Value="{DynamicResource ElevatedBrush}"/>
+                                                            <Setter Property="Foreground" Value="{DynamicResource AccentBrush}"/>
+                                                        </DataTrigger>
+                                                    </Style.Triggers>
+                                                </Style>
+                                            </Button.Style>
+                                            <TextBlock Text="{Binding Label}" HorizontalAlignment="Center"/>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Button Style="{StaticResource Button.Accent}" Height="46" Margin="0,16,0,0" Command="{Binding PlaceBidCommand}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <ctrl:IconControl Data="{StaticResource Icon.Gavel}" Brush="#FF06120C" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding PlaceBidLabel}" FontWeight="Bold" FontSize="12"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Style="{StaticResource Button.Outline}" Height="42" Margin="0,8,0,0" Command="{Binding BuyoutCommand}">
+                                <StackPanel Orientation="Horizontal">
+                                    <ctrl:IconControl Data="{StaticResource Icon.Gold}" Brush="{DynamicResource ForegroundBrush}" Width="14" Height="14" Margin="0,0,8,0"/>
+                                    <TextBlock Text="BUYOUT NOW" FontWeight="Bold" FontSize="11" Foreground="{DynamicResource ForegroundBrush}"/>
+                                </StackPanel>
+                            </Button>
+
+                            <Button Height="40" Margin="0,8,0,0" Command="{Binding WatchCommand}">
+                                <Button.Style>
+                                    <Style TargetType="Button" BasedOn="{StaticResource Button.Outline}">
+                                        <Style.Triggers>
+                                            <DataTrigger Binding="{Binding IsWatching}" Value="True">
+                                                <Setter Property="Background" Value="#2634D399"/>
+                                            </DataTrigger>
+                                        </Style.Triggers>
+                                    </Style>
+                                </Button.Style>
+                                <TextBlock Text="{Binding WatchLabel}" FontWeight="Bold" FontSize="11"/>
+                            </Button>
+                        </StackPanel>
+                    </Border>
+                </Grid>
+            </StackPanel>
+        </ScrollViewer>
+
+        <!-- MY LOTS TAB -->
+        <Grid Grid.Row="1" Margin="28,0,28,0" Visibility="{Binding IsMyLotsTab, Converter={StaticResource BoolVis}}">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="*"/>
+            </Grid.RowDefinitions>
+
+            <TextBlock Grid.Row="0" Text="MY AUCTION LOTS &amp; BIDS" Style="{StaticResource SectionTitle}" Margin="0,0,0,16"/>
+
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="MY ACTIVE LOTS" Style="{StaticResource PanelTitle}" Margin="0,0,0,12"/>
+                    <ItemsControl ItemsSource="{Binding MyLots}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Card}" Width="300" Margin="0,0,14,14" Padding="14">
+                                    <StackPanel>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition Width="50"/>
+                                                <ColumnDefinition Width="*"/>
+                                            </Grid.ColumnDefinitions>
+                                            <Border Grid.Column="0" Width="50" Height="50" CornerRadius="8" ClipToBounds="True">
+                                                <Image Source="{Binding Item.ImagePath}" Stretch="UniformToFill"/>
+                                            </Border>
+                                            <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                                <TextBlock Text="{Binding Item.Name}" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource ForegroundBrush}" TextTrimming="CharacterEllipsis"/>
+                                                <TextBlock Text="{Binding CurrentBid, StringFormat='Current: {0} CPs'}" Style="{StaticResource Label}" FontSize="11" Foreground="{DynamicResource AccentBrush}" Margin="0,4,0,0"/>
                                             </StackPanel>
                                         </Grid>
-                                    </Border>
-                                </DataTemplate>
-                            </ItemsControl.ItemTemplate>
-                        </ItemsControl>
-                    </ScrollViewer>
-                </Grid>
+                                        <Button Style="{StaticResource Button.Outline}" Height="36" Margin="0,12,0,0" Command="{Binding DataContext.CancelAuctionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}">
+                                            <TextBlock Text="CANCEL AUCTION" FontSize="11" Foreground="{DynamicResource DestructiveBrush}"/>
+                                        </Button>
+                                    </StackPanel>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+
+                    <TextBlock Text="MY BIDS" Style="{StaticResource PanelTitle}" Margin="0,24,0,12"/>
+                    <ItemsControl ItemsSource="{Binding MyBids}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Style="{StaticResource Card}" Width="300" Margin="0,0,14,14" Padding="14" Background="{DynamicResource SurfaceBrush}">
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition Width="50"/>
+                                            <ColumnDefinition Width="*"/>
+                                        </Grid.ColumnDefinitions>
+                                        <Border Grid.Column="0" Width="50" Height="50" CornerRadius="8" ClipToBounds="True">
+                                            <Image Source="{Binding Item.ImagePath}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <StackPanel Grid.Column="1" Margin="10,0,0,0" VerticalAlignment="Center">
+                                            <TextBlock Text="{Binding Item.Name}" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource ForegroundBrush}"/>
+                                            <TextBlock Text="{Binding CurrentBid, StringFormat='Your bid: {0} CPs'}" Style="{StaticResource Label}" FontSize="11" Margin="0,4,0,0"/>
+                                            <TextBlock Text="{Binding TimeRemaining, StringFormat='Ends in {0:hh\\:mm}'}" Style="{StaticResource Label}" FontSize="10" Foreground="{DynamicResource SubtleForegroundBrush}" Margin="0,2,0,0"/>
+                                        </StackPanel>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+        </Grid>
+
+        <!-- SELL TAB -->
+        <Grid Grid.Row="1" Margin="28,0,28,0" Visibility="{Binding IsSellTab, Converter={StaticResource BoolVis}}">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="20"/>
+                <ColumnDefinition Width="380"/>
+            </Grid.ColumnDefinitions>
+
+            <ScrollViewer Grid.Column="0" VerticalScrollBarVisibility="Auto">
+                <StackPanel>
+                    <TextBlock Text="SELECT ITEM TO AUCTION" Style="{StaticResource PanelTitle}" Margin="0,0,0,16"/>
+                    <ItemsControl ItemsSource="{Binding TradableInventory}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate><WrapPanel/></ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate>
+                                <Border Width="160" Margin="0,0,12,12" Padding="10">
+                                    <Border.Style>
+                                        <Style TargetType="Border" BasedOn="{StaticResource Card}">
+                                            <Style.Triggers>
+                                                <DataTrigger Value="True">
+                                                    <DataTrigger.Binding>
+                                                        <MultiBinding Converter="{x:Static cmn:EqualityConverter.Instance}">
+                                                            <Binding/>
+                                                            <Binding Path="DataContext.SelectedInventoryItem" RelativeSource="{RelativeSource AncestorType=UserControl}"/>
+                                                        </MultiBinding>
+                                                    </DataTrigger.Binding>
+                                                    <Setter Property="BorderBrush" Value="{DynamicResource AccentBrush}"/>
+                                                    <Setter Property="BorderThickness" Value="2"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Border.Style>
+                                    <Grid>
+                                        <Grid.RowDefinitions>
+                                            <RowDefinition Height="Auto"/>
+                                            <RowDefinition Height="Auto"/>
+                                        </Grid.RowDefinitions>
+                                        <Border Grid.Row="0" Height="70" CornerRadius="8" ClipToBounds="True">
+                                            <Image Source="{Binding ImagePath}" Stretch="UniformToFill"/>
+                                        </Border>
+                                        <TextBlock Grid.Row="1" Text="{Binding Name}" FontWeight="Bold" FontSize="10" Foreground="{DynamicResource ForegroundBrush}" Margin="0,8,0,0" TextTrimming="CharacterEllipsis"/>
+                                        <Button Grid.Row="0" Grid.RowSpan="2" Opacity="0" Command="{Binding DataContext.SelectInventoryForAuctionCommand, RelativeSource={RelativeSource AncestorType=UserControl}}" CommandParameter="{Binding}"/>
+                                    </Grid>
+                                </Border>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </ScrollViewer>
+
+            <Border Grid.Column="2" Style="{StaticResource Card}" Padding="20" VerticalAlignment="Top">
+                <StackPanel>
+                    <TextBlock Text="CREATE AUCTION LOT" Style="{StaticResource PanelTitle}" Margin="0,0,0,16"/>
+
+                    <StackPanel Visibility="{Binding SelectedInventoryItem, Converter={StaticResource BoolVis}}">
+                        <Border Height="100" CornerRadius="8" ClipToBounds="True" Margin="0,0,0,12">
+                            <Image Source="{Binding SelectedInventoryItem.ImagePath}" Stretch="UniformToFill"/>
+                        </Border>
+                        <TextBlock Text="{Binding SelectedInventoryItem.Name}" FontWeight="Bold" FontSize="13" Foreground="{DynamicResource ForegroundBrush}"/>
+                        <TextBlock Text="{Binding SelectedInventoryItem.Description}" Style="{StaticResource Body}" FontSize="11" Foreground="{DynamicResource MutedForegroundBrush}" TextWrapping="Wrap" Margin="0,6,0,16"/>
+
+                        <TextBlock Text="STARTING PRICE" Style="{StaticResource Label}" FontWeight="Bold" FontSize="10" Margin="0,0,0,6"/>
+                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Height="40" Margin="0,0,0,12">
+                            <TextBox Text="{Binding StartingPrice, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Margin="12,0" Foreground="{DynamicResource ForegroundBrush}" FontFamily="{DynamicResource MonoFont}"/>
+                        </Border>
+
+                        <TextBlock Text="BUYOUT PRICE" Style="{StaticResource Label}" FontWeight="Bold" FontSize="10" Margin="0,0,0,6"/>
+                        <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="8" Height="40" Margin="0,0,0,16">
+                            <TextBox Text="{Binding BuyoutPrice, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Margin="12,0" Foreground="{DynamicResource ForegroundBrush}" FontFamily="{DynamicResource MonoFont}"/>
+                        </Border>
+
+                        <TextBlock Text="CURRENCY" Style="{StaticResource Label}" FontWeight="Bold" FontSize="10" Margin="0,0,0,6"/>
+                        <Border Style="{StaticResource Segmented.Container}" Margin="0,0,0,20">
+                            <StackPanel Orientation="Horizontal">
+                                <RadioButton Style="{StaticResource Segmented.Item}" Content="CPs" IsChecked="{Binding AuctionCurrency, Converter={StaticResource ParamMatch}, ConverterParameter=Cps}"/>
+                                <RadioButton Style="{StaticResource Segmented.Item}" Content="Gold" IsChecked="{Binding AuctionCurrency, Converter={StaticResource ParamMatch}, ConverterParameter=Gold}"/>
+                            </StackPanel>
+                        </Border>
+
+                        <Button Style="{StaticResource Button.Accent}" Height="44" Command="{Binding CreateAuctionCommand}">
+                            <TextBlock Text="CREATE AUCTION" FontWeight="Bold" FontSize="12"/>
+                        </Button>
+                    </StackPanel>
+
+                    <TextBlock Text="Select an item to auction. Auction lasts 3 days. Only unbound tradable items allowed." Style="{StaticResource Label}" Foreground="{DynamicResource SubtleForegroundBrush}" TextWrapping="Wrap" TextAlignment="Center" Margin="0,30,0,0" Visibility="{Binding SelectedInventoryItem, Converter={StaticResource BoolVis}, ConverterParameter=invert}"/>
+                </StackPanel>
             </Border>
-        </StackPanel>
-    </ScrollViewer>
+        </Grid>
+    </Grid>
 </UserControl>

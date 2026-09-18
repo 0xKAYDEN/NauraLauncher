@@ -1,72 +1,72 @@
-using System;
 using System.Collections.ObjectModel;
 using NauraLauncher.Common;
+using NauraLauncher.Domain.Entities;
+using NauraLauncher.Domain.Enums;
 using NauraLauncher.Models;
 
 namespace NauraLauncher.ViewModels;
 
 /// <summary>
-/// Home page: operator greeting, quick stats, the "Continue Playing" hero,
-/// the "Latest Intel" news list and the installed-library grid.
+/// Home page: Conquer Online themed - player greeting, quick stats, continue journey, latest news, character showcase
 /// </summary>
 public class HomeViewModel : ObservableObject
 {
     public HomeViewModel()
     {
-        Greeting = "GOOD EVENING, VALKYRIE";
-        GreetingSub = "TWO SQUADMATES ONLINE · PATCH 2.4.1 STAGED FOR 03:00 UTC";
-        DateLine = "THU 17 SEP · SECTOR NEO-BRNO";
+        Greeting = "WELCOME BACK, HERO";
+        GreetingSub = "TWIN CITY MARKET OPEN · 3 FRIENDS ONLINE · SERVER: ETERNITY";
+        DateLine = "THU 17 SEP · TWIN CITY (178,182)";
 
         StatCards = new ObservableCollection<StatCard>
         {
-            new() { IconKey = "Icon.Clock",     Label = "PLAYTIME THIS WEEK", Value = "12H 40M", Delta = "+3H 10M VS LAST WEEK", DeltaIsPositive = true },
-            new() { IconKey = "Icon.Trophy",    Label = "ACHIEVEMENTS",       Value = "214 / 380", Delta = "56% COMPLETION",     DeltaIsPositive = true },
-            new() { IconKey = "Icon.Users",     Label = "SQUAD ONLINE",       Value = "07",      Delta = "2 IN LOBBY",          DeltaIsPositive = true },
-            new() { IconKey = "Icon.HardDrive", Label = "VAULT STORAGE",      Value = "412 GB",  Delta = "68% OF 600 GB USED",  DeltaIsPositive = false },
+            new() { IconKey = "Icon.Clock",     Label = "PLAYTIME THIS WEEK", Value = "23H 40M", Delta = "+5H 10M VS LAST WEEK", DeltaIsPositive = true },
+            new() { IconKey = "Icon.Trophy",    Label = "BATTLE POWER",       Value = "4,850", Delta = "+120 THIS WEEK",     DeltaIsPositive = true },
+            new() { IconKey = "Icon.Users",     Label = "FRIENDS ONLINE",       Value = "07",      Delta = "2 IN TWIN CITY",          DeltaIsPositive = true },
+            new() { IconKey = "Icon.Gold", Label = "WEALTH",      Value = "1.2M Gold",  Delta = "+50K TODAY",  DeltaIsPositive = true },
         };
 
-        ContinueTitle = "PROTOCOL 9: ECLIPSE";
-        ContinueStudio = "NEXUS ENTERTAINMENT";
-        ContinueMission = "MISSION 07 // SILENT CARTOGRAPHER";
-        ContinueProgressLabel = "62% COMPLETE";
-        ContinuePlaytime = "18H 22M PLAYED";
-        ContinueImagePath = "Assets/hero_protocol9.png";
-        ContinueProgress = 0.62;
+        ContinueTitle = "CONQUER ONLINE";
+        ContinueStudio = "TQ DIGITAL";
+        ContinueMission = "QUEST: DRAGON BALL HUNT // MARKET CENTER";
+        ContinueProgressLabel = "LEVEL 130 - 2ND REBORN TROJAN";
+        ContinuePlaytime = "1,240H TOTAL PLAYED";
+        ContinueImagePath = "Assets/hero_conquer.png";
+        ContinueProgress = 0.85;
 
         NewsItems = new ObservableCollection<NewsItem>
         {
-            new() { Category = "LIVE",         Title = "OBSIDIAN KATANA LOT #0042 CROSSES $52K", Meta = "2M AGO",  ToneHex = "#34D399", IsLive = true },
-            new() { Category = "PATCH NOTES",  Title = "2.4.1 — DIRECTSTORAGE STREAMING REBALANCE",  Meta = "1H AGO",  ToneHex = "#8A8F99" },
-            new() { Category = "VAULT DROP",   Title = "SERIAL EDITION ALLOCATION OPENS FRIDAY",     Meta = "4H AGO",  ToneHex = "#F5A524" },
-            new() { Category = "ESPORTS",      Title = "APEX CIRCUIT QUALIFIERS — REGIONAL BRACKET", Meta = "9H AGO",  ToneHex = "#60A5FA" },
-            new() { Category = "COMMUNITY",    Title = "GREY PERIMETER MOD TOOLKIT 1.2 SHIPPED",     Meta = "1D AGO",  ToneHex = "#C084FC" },
+            new() { Category = "LIVE",         Title = "SUPER DRAGON GEM AUCTION CROSSES 15K CPS", Meta = "2M AGO",  ToneHex = "#34D399", IsLive = true },
+            new() { Category = "PATCH NOTES",  Title = "PATCH 7009 — NEW NINJA SKILLS & BALANCE",  Meta = "1H AGO",  ToneHex = "#8A8F99" },
+            new() { Category = "MARKET",   Title = "MARKETPLACE BOOM: +200% TRADE VOLUME TODAY",     Meta = "4H AGO",  ToneHex = "#F5A524" },
+            new() { Category = "EVENT",      Title = "GUILD WAR QUALIFIERS — REGISTRATION OPEN", Meta = "9H AGO",  ToneHex = "#60A5FA" },
+            new() { Category = "COMMUNITY",    Title = "DRAGON BALL EXCHANGE RATE HITS RECORD HIGH",     Meta = "1D AGO",  ToneHex = "#C084FC" },
         };
 
         Library = new ObservableCollection<LibraryItem>
         {
             new()
             {
-                Title = "PROTOCOL 9: ECLIPSE", Studio = "NEXUS ENTERTAINMENT", Status = "READY",
-                Playtime = "18H 22M PLAYED", Progress = 0.62, StatusIsAccent = true,
-                ImagePath = "Assets/hero_protocol9.png",
+                Title = "TROJAN HERO", Studio = "MAIN CHARACTER", Status = "2ND REBORN - LVL 130",
+                Playtime = "TWIN CITY", Progress = 1.0, StatusIsAccent = true,
+                ImagePath = "Assets/card_trojan.png",
             },
             new()
             {
-                Title = "MONOLITH: DESCENT", Studio = "SOVEREIGN ARCH", Status = "UPDATE 1.2 GB",
-                Playtime = "41H 08M PLAYED", Progress = 1.0,
-                ImagePath = "Assets/card_monolith.png",
+                Title = "NINJA ASSASSIN", Studio = "SECONDARY", Status = "1ST REBORN - LVL 120",
+                Playtime = "PHOENIX CASTLE", Progress = 0.85,
+                ImagePath = "Assets/card_ninja.png",
             },
             new()
             {
-                Title = "SYNTHESIS // ZERO", Studio = "AETHER LABS", Status = "READY",
-                Playtime = "07H 55M PLAYED", Progress = 0.28, StatusIsAccent = true,
-                ImagePath = "Assets/card_synthesis.png",
+                Title = "FIRE TAOIST", Studio = "SUPPORT", Status = "LVL 110",
+                Playtime = "MARKET", Progress = 0.62, StatusIsAccent = false,
+                ImagePath = "Assets/card_taoist.png",
             },
             new()
             {
-                Title = "GREY PERIMETER", Studio = "KINESIS CORE", Status = "VERIFYING",
-                Playtime = "02H 11M PLAYED", Progress = 0.91,
-                ImagePath = "Assets/card_grey.png",
+                Title = "WARRIOR TANK", Studio = "ALT CHARACTER", Status = "LVL 95",
+                Playtime = "DESERT CITY", Progress = 0.45,
+                ImagePath = "Assets/card_warrior.png",
             },
         };
 
@@ -106,7 +106,7 @@ public class HomeViewModel : ObservableObject
     }
 
     /// <summary>Button label flips while a launch is being staged.</summary>
-    public string ContinueCta => IsLaunching ? "LAUNCHING…" : "CONTINUE PLAYING";
+    public string ContinueCta => IsLaunching ? "LAUNCHING CONQUER..." : "ENTER TWIN CITY";
 
     public ObservableCollection<NewsItem> NewsItems { get; }
     public ObservableCollection<LibraryItem> Library { get; }

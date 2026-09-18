@@ -1,0 +1,242 @@
+<UserControl x:Class="NauraLauncher.Views.AuthPage"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:ctrl="clr-namespace:NauraLauncher.Controls"
+             xmlns:vm="clr-namespace:NauraLauncher.ViewModels"
+             mc:Ignorable="d"
+             d:DesignHeight="880" d:DesignWidth="1504"
+             d:DataContext="{d:DesignInstance Type=vm:AuthViewModel}">
+
+    <Grid Background="{DynamicResource BackgroundBrush}">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="1.2*"/>
+            <ColumnDefinition Width="*"/>
+        </Grid.ColumnDefinitions>
+
+        <!-- Left: Conquer Online hero -->
+        <Grid Grid.Column="0">
+            <Image Source="Assets/hero_conquer.png" Stretch="UniformToFill" Opacity="0.9"/>
+            <Border>
+                <Border.Background>
+                    <LinearGradientBrush StartPoint="0,0" EndPoint="1,0">
+                        <GradientStop Color="#E007080A" Offset="0.0"/>
+                        <GradientStop Color="#9907080A" Offset="0.5"/>
+                        <GradientStop Color="#0007080A" Offset="1.0"/>
+                    </LinearGradientBrush>
+                </Border.Background>
+            </Border>
+
+            <StackPanel VerticalAlignment="Center" Margin="48,0">
+                <StackPanel Orientation="Horizontal" Margin="0,0,0,24">
+                    <Border Width="48" Height="48" CornerRadius="12" Background="#2634D399" BorderBrush="{DynamicResource AccentBrush}" BorderThickness="1">
+                        <ctrl:IconControl Data="{StaticResource Icon.Dragon}" Brush="{DynamicResource AccentBrush}" Width="28" Height="28"/>
+                    </Border>
+                    <StackPanel Margin="16,0,0,0" VerticalAlignment="Center">
+                        <TextBlock Text="NAURA LAUNCHER" FontSize="22" FontWeight="Bold" FontFamily="{DynamicResource DisplayFont}" Foreground="{DynamicResource ForegroundBrush}"/>
+                        <TextBlock Text="CONQUER ONLINE • ETERNITY SERVER" Style="{StaticResource Label}" Foreground="{DynamicResource AccentBrush}" FontWeight="Bold" Margin="0,4,0,0"/>
+                    </StackPanel>
+                </StackPanel>
+
+                <TextBlock Text="ENTER THE WORLD OF MARTIAL ARTS" FontSize="42" FontWeight="Bold" FontFamily="{DynamicResource DisplayFont}" Foreground="{DynamicResource ForegroundBrush}" TextWrapping="Wrap" LineHeight="48"/>
+                <TextBlock Text="Trade Dragon Balls, conquer Twin City, dominate Guild War. Your legend starts here - Trojan, Ninja, Taoist, Warrior, and more await." 
+                           Style="{StaticResource Body}" Foreground="{DynamicResource MutedForegroundBrush}" Margin="0,20,0,0" MaxWidth="520" HorizontalAlignment="Left" TextWrapping="Wrap" FontSize="15" LineHeight="22"/>
+
+                <StackPanel Orientation="Horizontal" Margin="0,36,0,0">
+                    <Border Style="{StaticResource Card}" Padding="16,12" Margin="0,0,12,0">
+                        <StackPanel Orientation="Horizontal">
+                            <ctrl:IconControl Data="{StaticResource Icon.Users}" Brush="{DynamicResource AccentBrush}" Width="18" Height="18" Margin="0,0,10,0"/>
+                            <StackPanel>
+                                <TextBlock Text="12,847" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource ForegroundBrush}"/>
+                                <TextBlock Text="HEROES ONLINE" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}" FontSize="10"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                    <Border Style="{StaticResource Card}" Padding="16,12">
+                        <StackPanel Orientation="Horizontal">
+                            <ctrl:IconControl Data="{StaticResource Icon.Gold}" Brush="#FFF5A524" Width="18" Height="18" Margin="0,0,10,0"/>
+                            <StackPanel>
+                                <TextBlock Text="2.4M" FontWeight="Bold" FontSize="16" Foreground="{DynamicResource ForegroundBrush}"/>
+                                <TextBlock Text="TRADES TODAY" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}" FontSize="10"/>
+                            </StackPanel>
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </StackPanel>
+
+            <StackPanel VerticalAlignment="Bottom" Margin="48,0,48,36">
+                <TextBlock Text="“In Twin City, every Dragon Ball counts. Trade wisely, fight bravely.”" FontStyle="Italic" Foreground="{DynamicResource MutedForegroundBrush}" FontSize="13"/>
+                <TextBlock Text="— Market Conductor, Twin City (178,182)" Style="{StaticResource Label}" Foreground="{DynamicResource SubtleForegroundBrush}" Margin="0,8,0,0"/>
+            </StackPanel>
+        </Grid>
+
+        <!-- Right: Auth forms -->
+        <Border Grid.Column="1" Background="{DynamicResource CardBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1,0,0,0">
+            <ScrollViewer VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="48,60" VerticalAlignment="Center">
+
+                    <!-- Logo for mobile -->
+                    <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,0,0,36" Visibility="Collapsed">
+                        <Border Width="40" Height="40" CornerRadius="10" Background="{DynamicResource MutedBrush}">
+                            <ctrl:IconControl Data="{StaticResource Icon.Dragon}" Brush="{DynamicResource AccentBrush}" Width="22" Height="22"/>
+                        </Border>
+                        <TextBlock Text="NAURA" FontSize="20" FontWeight="Bold" Foreground="{DynamicResource ForegroundBrush}" VerticalAlignment="Center" Margin="12,0,0,0"/>
+                    </StackPanel>
+
+                    <!-- Login Form -->
+                    <StackPanel Visibility="{Binding IsLoginMode, Converter={StaticResource BoolVis}}">
+                        <TextBlock Text="Welcome Back, Hero" Style="{StaticResource SectionTitle}" FontSize="28"/>
+                        <TextBlock Text="Login to access Twin City marketplace, auction, and your inventory" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}" Margin="0,10,0,32" TextWrapping="Wrap"/>
+
+                        <StackPanel>
+                            <TextBlock Text="USERNAME OR EMAIL" Style="{StaticResource Label}" FontWeight="Bold" Margin="0,0,0,8"/>
+                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Height="48">
+                                <Grid Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ctrl:IconControl Grid.Column="0" Data="{StaticResource Icon.User}" Brush="{DynamicResource MutedForegroundBrush}" Width="18" Height="18" Margin="0,0,12,0"/>
+                                    <TextBox Grid.Column="1" Text="{Binding LoginUsername, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="14" CaretBrush="{DynamicResource ForegroundBrush}"/>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock Text="PASSWORD" Style="{StaticResource Label}" FontWeight="Bold" Margin="0,20,0,8"/>
+                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Height="48">
+                                <Grid Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ctrl:IconControl Grid.Column="0" Data="{StaticResource Icon.Lock}" Brush="{DynamicResource MutedForegroundBrush}" Width="18" Height="18" Margin="0,0,12,0"/>
+                                    <TextBox Grid.Column="1" Text="{Binding LoginPassword, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="14" CaretBrush="{DynamicResource ForegroundBrush}"/>
+                                </Grid>
+                            </Border>
+
+                            <!-- Error -->
+                            <Border Background="#33F87171" CornerRadius="8" Padding="12,10" Margin="0,20,0,0" Visibility="{Binding HasError, Converter={StaticResource BoolVis}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <ctrl:IconControl Data="{StaticResource Icon.Info}" Brush="#FFF87171" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding ErrorMessage}" Foreground="#FFF87171" FontSize="13" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Button Style="{StaticResource Button.Accent}" Height="50" Margin="0,28,0,0" Command="{Binding LoginCommand}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="ENTER TWIN CITY" FontWeight="Bold" FontSize="14"/>
+                                    <ctrl:IconControl Data="{StaticResource Icon.ArrowRight}" Brush="#FF06120C" Width="16" Height="16" Margin="10,0,0,0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                                <TextBlock Text="New hero?" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}" VerticalAlignment="Center"/>
+                                <Button Style="{StaticResource Button.Ghost}" Padding="8,4" Margin="8,0,0,0" Command="{Binding SwitchToRegisterCommand}">
+                                    <TextBlock Text="CREATE ACCOUNT" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentBrush}"/>
+                                </Button>
+                            </StackPanel>
+
+                            <Border Background="{DynamicResource SurfaceBrush}" CornerRadius="10" Padding="16,12" Margin="0,32,0,0">
+                                <StackPanel>
+                                    <TextBlock Text="DEMO ACCOUNTS" Style="{StaticResource Label}" FontWeight="Bold" Foreground="{DynamicResource ForegroundBrush}" Margin="0,0,0,8"/>
+                                    <TextBlock Text="Username: admin / Password: admin123" Style="{StaticResource Label}" FontFamily="{DynamicResource MonoFont}" Foreground="{DynamicResource MutedForegroundBrush}" FontSize="11"/>
+                                    <TextBlock Text="Or use any mock hero: DragonLord, FireQueen, ShadowNinja" Style="{StaticResource Label}" FontFamily="{DynamicResource MonoFont}" Foreground="{DynamicResource SubtleForegroundBrush}" FontSize="10" Margin="0,4,0,0" TextWrapping="Wrap"/>
+                                </StackPanel>
+                            </Border>
+                        </StackPanel>
+                    </StackPanel>
+
+                    <!-- Register Form -->
+                    <StackPanel Visibility="{Binding IsRegisterMode, Converter={StaticResource BoolVis}}">
+                        <TextBlock Text="Join Conquer Online" Style="{StaticResource SectionTitle}" FontSize="28"/>
+                        <TextBlock Text="Create your hero and start trading Dragon Balls in Twin City" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}" Margin="0,10,0,32" TextWrapping="Wrap"/>
+
+                        <StackPanel>
+                            <TextBlock Text="USERNAME" Style="{StaticResource Label}" FontWeight="Bold" Margin="0,0,0,8"/>
+                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Height="48">
+                                <Grid Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ctrl:IconControl Grid.Column="0" Data="{StaticResource Icon.User}" Brush="{DynamicResource MutedForegroundBrush}" Width="18" Height="18" Margin="0,0,12,0"/>
+                                    <TextBox Grid.Column="1" Text="{Binding RegUsername, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="14"/>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock Text="DISPLAY NAME" Style="{StaticResource Label}" FontWeight="Bold" Margin="0,16,0,8"/>
+                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Height="48">
+                                <Grid Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ctrl:IconControl Grid.Column="0" Data="{StaticResource Icon.Users}" Brush="{DynamicResource MutedForegroundBrush}" Width="18" Height="18" Margin="0,0,12,0"/>
+                                    <TextBox Grid.Column="1" Text="{Binding RegDisplayName, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="14"/>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock Text="EMAIL" Style="{StaticResource Label}" FontWeight="Bold" Margin="0,16,0,8"/>
+                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Height="48">
+                                <Grid Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ctrl:IconControl Grid.Column="0" Data="{StaticResource Icon.Server}" Brush="{DynamicResource MutedForegroundBrush}" Width="18" Height="18" Margin="0,0,12,0"/>
+                                    <TextBox Grid.Column="1" Text="{Binding RegEmail, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="14"/>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock Text="PASSWORD" Style="{StaticResource Label}" FontWeight="Bold" Margin="0,16,0,8"/>
+                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Height="48">
+                                <Grid Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ctrl:IconControl Grid.Column="0" Data="{StaticResource Icon.Lock}" Brush="{DynamicResource MutedForegroundBrush}" Width="18" Height="18" Margin="0,0,12,0"/>
+                                    <TextBox Grid.Column="1" Text="{Binding RegPassword, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="14"/>
+                                </Grid>
+                            </Border>
+
+                            <TextBlock Text="CONFIRM PASSWORD" Style="{StaticResource Label}" FontWeight="Bold" Margin="0,16,0,8"/>
+                            <Border Background="{DynamicResource SurfaceBrush}" BorderBrush="{DynamicResource BorderBrush}" BorderThickness="1" CornerRadius="12" Height="48">
+                                <Grid Margin="16,0">
+                                    <Grid.ColumnDefinitions>
+                                        <ColumnDefinition Width="Auto"/>
+                                        <ColumnDefinition Width="*"/>
+                                    </Grid.ColumnDefinitions>
+                                    <ctrl:IconControl Grid.Column="0" Data="{StaticResource Icon.Lock}" Brush="{DynamicResource MutedForegroundBrush}" Width="18" Height="18" Margin="0,0,12,0"/>
+                                    <TextBox Grid.Column="1" Text="{Binding RegConfirmPassword, UpdateSourceTrigger=PropertyChanged}" Background="Transparent" BorderThickness="0" VerticalContentAlignment="Center" Foreground="{DynamicResource ForegroundBrush}" FontSize="14"/>
+                                </Grid>
+                            </Border>
+
+                            <Border Background="#33F87171" CornerRadius="8" Padding="12,10" Margin="0,20,0,0" Visibility="{Binding HasError, Converter={StaticResource BoolVis}}">
+                                <StackPanel Orientation="Horizontal">
+                                    <ctrl:IconControl Data="{StaticResource Icon.Info}" Brush="#FFF87171" Width="16" Height="16" Margin="0,0,8,0"/>
+                                    <TextBlock Text="{Binding ErrorMessage}" Foreground="#FFF87171" FontSize="13" TextWrapping="Wrap" VerticalAlignment="Center"/>
+                                </StackPanel>
+                            </Border>
+
+                            <Button Style="{StaticResource Button.Accent}" Height="50" Margin="0,28,0,0" Command="{Binding RegisterCommand}">
+                                <StackPanel Orientation="Horizontal" HorizontalAlignment="Center">
+                                    <TextBlock Text="CREATE HERO" FontWeight="Bold" FontSize="14"/>
+                                    <ctrl:IconControl Data="{StaticResource Icon.ArrowRight}" Brush="#FF06120C" Width="16" Height="16" Margin="10,0,0,0"/>
+                                </StackPanel>
+                            </Button>
+
+                            <StackPanel Orientation="Horizontal" HorizontalAlignment="Center" Margin="0,20,0,0">
+                                <TextBlock Text="Already have a hero?" Style="{StaticResource Label}" Foreground="{DynamicResource MutedForegroundBrush}" VerticalAlignment="Center"/>
+                                <Button Style="{StaticResource Button.Ghost}" Padding="8,4" Margin="8,0,0,0" Command="{Binding SwitchToLoginCommand}">
+                                    <TextBlock Text="LOGIN" FontWeight="Bold" FontSize="12" Foreground="{DynamicResource AccentBrush}"/>
+                                </Button>
+                            </StackPanel>
+                        </StackPanel>
+                    </StackPanel>
+
+                </StackPanel>
+            </ScrollViewer>
+        </Border>
+    </Grid>
+</UserControl>
